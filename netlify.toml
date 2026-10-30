@@ -10,6 +10,11 @@ NODE_VERSION = "22"
 node_bundler = "esbuild"
 
 [[redirects]]
+from = "/"
+to = "/FilmoMasters.html"
+status = 200
+
+[[redirects]]
 from = "/api/tmdb/discover"
 to = "/.netlify/functions/tmdb-discover"
 status = 200
