@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FilmoMasters</title>
+<style>
+@font-face{font-family:"Fifties Movies";src:local("Fifties Movies");font-display:swap}
+:root{--bg:#0a0607;--sf:#1a1012;--tx:#f5e9d3;--mu:#b09c86;--ac:#d1242f;--bd:#3a2427;--gold:#e8b84a;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 "Fifties Movies","Trebuchet MS",sans-serif}
+h1,h2,h3{font-family:"Fifties Movies","Trebuchet MS",sans-serif;margin:.2em 0}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 6px;max-width:1000px;margin:auto}
+header h1{font-size:1.5rem;letter-spacing:.04em}
+.pts{background:var(--ac);color:#fff;border-radius:99px;padding:5px 10px;font-weight:700}
+#nav{display:flex;gap:6px;overflow-x:auto;padding:6px 16px;max-width:1000px;margin:auto}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:8px;padding:7px 12px;white-space:nowrap}
+button.on{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+button:disabled{opacity:.5}
+.bt{background:var(--ac);color:#fff;border:0;font-weight:700;padding:11px 22px;font-size:1rem}
+main{max-width:1000px;margin:auto;padding:8px 16px 40px;overflow-x:hidden}
+.mu{color:var(--mu)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(130px,100%),1fr));gap:12px;margin:12px 0}
+.mini{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
+.chips,.tabs2{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.card{container-type:inline-size;position:relative;aspect-ratio:2/3;border-radius:10px;overflow:hidden;border:2px solid var(--rc);background:linear-gradient(165deg,hsl(var(--h) 50% 38%),hsl(calc(var(--h) + 50) 55% 10%));color:#fff;box-shadow:0 4px 14px #0006}
+.ps{position:absolute;inset:0;display:grid;place-items:center;font:700 80cqi "Fifties Movies","Trebuchet MS",sans-serif;opacity:.16}
+.rb{position:absolute;top:4%;right:4%;display:grid;place-items:center;min-width:12cqi;height:12cqi;padding:0 2cqi;border-radius:99px;background:var(--rc);color:#160d0a;font:800 7cqi/1 system-ui,sans-serif;box-shadow:0 1px 5px #0008}
+.n{position:absolute;top:12cqi;right:4cqi;background:#000a;border-radius:99px;padding:1cqi 4cqi;font-size:8cqi}
+.ft{position:absolute;left:0;right:0;bottom:0;padding:14cqi 6cqi 6cqi;display:flex;justify-content:space-between;align-items:flex-end;gap:4cqi;background:linear-gradient(transparent,#000d)}
+.ft div{min-width:0}.ft b{display:block;font-size:9cqi;line-height:1.1}.ft small{display:block;font-size:6.5cqi;opacity:.8;margin-top:1cqi}.ft span{font-size:8cqi;font-style:italic;font-weight:400;opacity:.84}
+.r0{--rc:#a9b0b9}.r1{--rc:#63cb8b}.r2{--rc:#50a1ff}.r3{--rc:#c17bff}.r4{--rc:#ffc259}.r5{--rc:#ffe48b}.r6{--rc:#ff68c5}
+.card{border-color:color-mix(in srgb,var(--rc) 54%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--rc) 22%,transparent),0 5px 16px #0009,inset 0 0 18px color-mix(in srgb,var(--rc) 10%,transparent)}
+.card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(145deg,color-mix(in srgb,var(--rc) 18%,transparent),transparent 30% 72%,color-mix(in srgb,var(--rc) 22%,transparent));mix-blend-mode:screen}
+@keyframes gl{to{box-shadow:0 0 18px 3px #ffd166}}
+.gh{background:var(--sf);color:var(--mu);border:2px dashed var(--bd);box-shadow:none}.gh .ft{background:none}.gh .ps{opacity:.25}
+.rv>div{position:relative;animation:pop .5s both;animation-delay:calc(var(--i)*.22s)}
+@keyframes pop{from{opacity:0;transform:translateY(24px) scale(.85)}}
+.nw{position:absolute;top:-6px;left:-6px;background:var(--ac);color:#fff;font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:6px;z-index:2}
+.sl{display:flex;gap:6px;align-items:center;justify-content:center;margin:10px 0;flex-wrap:wrap}
+.pk{position:relative;width:25px;height:36px;border-radius:6px;border:1px solid #d6b66f;display:block;background:linear-gradient(180deg,#9e2029 0 29%,#f1e2bf 29% 100%);box-shadow:0 2px 4px #0008}
+.pk::before{content:"";position:absolute;left:4px;right:4px;top:15px;bottom:4px;border-top:1px dashed #9c2829;background:linear-gradient(145deg,#dbc7a3,#f9efd8);opacity:.9}
+.pk.on{border-color:#e8c26d;background:linear-gradient(180deg,#b52a31 0 29%,#f7ebd0 29% 100%)}
+.bar{height:8px;background:var(--bd);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac)}
+.al,.box{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:12px;margin:12px 0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.it{display:flex;flex-direction:column;gap:6px}.it .row{font-size:.85rem}
+input,select{font:inherit;padding:7px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);max-width:100%}
+#toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:9px 16px;border-radius:99px;opacity:0;transition:.3s;pointer-events:none;z-index:9}
+#toast.s{opacity:1}
+#toast.coin-toast{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.ok{color:#2e9d5b;font-weight:700}
+body{background:radial-gradient(ellipse 55% 45% at 50% -8%,#ffe5a033,transparent 70%),var(--bg);min-height:100vh}
+body::before,body::after{content:"";position:fixed;top:0;bottom:0;width:4.5vw;max-width:60px;background:repeating-linear-gradient(90deg,#6b0f1a 0 8px,#3d0810 8px 16px,#520c15 16px 22px);opacity:.75;z-index:0;pointer-events:none}
+body::before{left:0;box-shadow:6px 0 24px #000}body::after{right:0;box-shadow:-6px 0 24px #000}
+header,#nav,main{position:relative;z-index:1}
+header h1{color:var(--gold);text-shadow:0 0 14px #e8b84a88}
+.mq{height:58px;margin:2px auto 0;max-width:1000px;position:relative;z-index:1}
+.mq svg{display:block;width:calc(100vw + 120px);height:100%;margin-left:calc((100% - (100vw + 120px))/2);max-width:none;overflow:visible}
+.mq path{fill:none;stroke:#9b7141;stroke-width:2}
+.mq circle{fill:var(--gold);stroke:#9b7141;stroke-width:1.5;filter:drop-shadow(0 0 4px #e8b84a88);animation:bk 1.8s steps(1) infinite}
+@keyframes bk{50%{opacity:.3}}
+#mb{width:38px;height:38px;padding:0;margin-left:8px;display:grid;place-items:center}
+#hb{width:40px;height:40px;padding:0;display:grid;place-items:center}
+.icon{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle}
+.brand-icon{width:34px;height:34px;color:var(--gold);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.currency-icon{width:21px;height:21px;color:#ffe08b;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.pts{display:inline-flex;align-items:center;gap:7px}
+#nav button{border-color:#5a3b2a}
+.pwrap{display:grid;justify-items:center;padding:24px 0 6px}
+.float{animation:fl 3.4s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-16px)}}
+.psh{width:170px;height:16px;border-radius:50%;background:radial-gradient(#000c,transparent 70%);animation:sh 3.4s ease-in-out infinite}
+@keyframes sh{50%{transform:scale(.7);opacity:.55}}
+.pack{position:relative;width:min(240px,calc(100vw - 64px));aspect-ratio:2/3;height:auto;cursor:pointer;transition:transform .15s ease-out;filter:drop-shadow(0 18px 24px #000b);border-radius:13px;overflow:hidden}
+.pack.dim{filter:grayscale(.8) brightness(.6)}
+.pbody,.ptop{position:absolute;left:0;right:0;overflow:hidden}
+.pbody{top:31.1%;bottom:0;border-radius:0 0 13px 13px;background:radial-gradient(circle at 50% 22%,#ffd16655,transparent 55%),repeating-linear-gradient(0deg,#0000 0 3px,#0000000a 3px 4px),#f1e2bf;color:#8c0e17}
+.foil{position:absolute;inset:0;background:linear-gradient(115deg,transparent calc(var(--mx,30%) - 25%),#fff5 var(--mx,30%),transparent calc(var(--mx,30%) + 25%));mix-blend-mode:screen;pointer-events:none;z-index:5}
+.fan{position:absolute;left:0;right:0;top:62px;height:170px}
+.fan>div{position:absolute}
+.fan i{position:absolute;left:4px;bottom:-9px;background:#fff;color:#000;font:700 11px "Fifties Movies","Trebuchet MS",sans-serif;padding:0 5px;border-radius:5px;z-index:5}
+.f1{left:50%;width:92px;top:0;transform:translateX(-50%) rotate(-3deg);z-index:3}.f2{left:16px;width:72px;top:24px;transform:rotate(-9deg)}.f3{right:16px;width:72px;top:30px;transform:rotate(9deg)}
+.ptop{top:0;height:32.2%;z-index:6;background:linear-gradient(135deg,#75131b,#b5252e 48%,#80151e)}
+.stub{height:63px;display:flex;justify-content:center;align-items:flex-start;padding:21px 16px 0;font-weight:700;font-size:12px;letter-spacing:.12em;cursor:grab;user-select:none}
+.tearline{position:absolute;left:0;right:0;bottom:-1px;height:12px;border:0;background:radial-gradient(circle at 12px 0,#f1e2bf 8px,transparent 8.5px) 0 0/24px 12px repeat-x;pointer-events:none}
+.barcode{position:absolute;left:16px;right:16px;bottom:17px;height:22px;background:repeating-linear-gradient(90deg,#241a17 0 2px,transparent 2px 4px,#241a17 4px 5px,transparent 5px 8px,#241a17 8px 11px,transparent 11px 12px)}
+.pack.shake{animation:shk .7s linear}
+@keyframes shk{10%{transform:translateX(-5px) rotate(-2deg)}20%{transform:translateX(6px) rotate(2deg)}30%{transform:translateX(-7px) rotate(-3deg)}40%{transform:translateX(7px) rotate(3deg)}50%{transform:translateX(-6px)}60%{transform:translateX(6px)}80%{transform:translateX(-3px)}}
+.pack.rip{animation:zm .7s ease-in forwards;pointer-events:none}
+.pack.rip .ptop{animation:rip .7s ease-in forwards}
+@keyframes rip{20%{transform:translate(4%,-8px) rotate(3deg)}100%{transform:translate(140%,-90px) rotate(28deg);opacity:0}}
+@keyframes zm{60%{opacity:1}to{transform:scale(1.3);opacity:0}}
+.pack.rip .pbody::after{content:"";position:absolute;left:0;right:0;top:0;height:75%;background:linear-gradient(#fffbe6,#ffd16688 40%,transparent);z-index:7}
+.ov{position:fixed;inset:0;z-index:20;display:none;background:#000d;background:radial-gradient(circle at 50% 42%,color-mix(in srgb,var(--rc,#e8b84a) 38%,#000),#000 72%);overflow:hidden;padding:env(safe-area-inset-top,0px) 12px env(safe-area-inset-bottom,0px)}
+.ov.on{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.flash{position:absolute;inset:0;background:#fff;z-index:3;pointer-events:none;animation:fx .6s forwards}
+@keyframes fx{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
+.rays{position:absolute;width:200vmax;height:200vmax;left:50%;top:42%;margin:-100vmax 0 0 -100vmax;background:repeating-conic-gradient(color-mix(in srgb,var(--rc) 40%,transparent) 0 8deg,transparent 8deg 16deg);-webkit-mask-image:radial-gradient(circle closest-side,#000 5%,transparent 70%);mask-image:radial-gradient(circle closest-side,#000 5%,transparent 70%);animation:sp 18s linear infinite;opacity:0;transition:opacity .6s}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ov.big .rays{opacity:1}.ov.big .cf .card{box-shadow:0 0 40px 8px var(--rc)}
+.stg{position:relative;z-index:1;display:grid;justify-items:center;gap:14px;cursor:pointer;animation:sin .4s both}
+@keyframes sin{from{opacity:0;transform:translateX(60vw) rotate(10deg)}}
+.stg.out{animation:sout .32s ease-in forwards}
+@keyframes sout{to{opacity:0;transform:translateX(-70vw) rotate(-14deg)}}
+.fc{width:min(62vw,290px);aspect-ratio:2/3;perspective:1000px}
+.fi{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+.fl .fi{transform:rotateY(180deg)}
+.cb,.cf{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.cf{transform:rotateY(180deg)}.cf .card{width:100%;height:100%}
+.cb{border-radius:10px;border:2px solid var(--gold);display:grid;place-content:center;text-align:center;gap:6px;background:repeating-linear-gradient(45deg,#2a0b10 0 10px,#1d070b 10px 20px);color:var(--gold);font-size:2.2rem}
+.cb b{font-size:1rem;letter-spacing:.1em}
+.hint{color:#fff;opacity:.85;margin:0;text-align:center}
+.dots{display:flex;gap:8px;z-index:1}.dots i{width:9px;height:9px;border-radius:50%;background:#fff3}.dots .d{background:var(--gold)}.dots .c{background:#fff}
+.skip{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:12px;z-index:4;background:#0008;color:#fff;border-color:#fff4}
+.rs{position:relative;z-index:1;text-align:center;max-height:100%;overflow:auto;width:100%;max-width:700px;padding:10px 0}.rs h2{color:var(--gold)}
+.sum{grid-template-columns:repeat(auto-fit,minmax(100px,1fr))}
+#dr{position:fixed;top:0;bottom:0;left:0;width:230px;max-width:80vw;background:var(--sf);border-right:1px solid var(--bd);transform:translateX(-102%);transition:transform .3s;z-index:15;padding:calc(64px + env(safe-area-inset-top,0px)) 12px 12px;box-shadow:6px 0 30px #000}
+#dr.on{transform:none}
+#nav{display:flex;flex-direction:column;overflow-x:visible;overflow-y:auto;padding:0;margin:0;gap:8px;max-width:none}
+#nav button{text-align:left;font-size:1.05rem}
+#bd{position:fixed;inset:0;background:#0009;z-index:14;display:none}#bd.on{display:block}
+#hb{font-size:1.2rem;padding:4px 11px}
+.pi{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pbody{top:31.1%;background:repeating-linear-gradient(0deg,#0000 0 3px,#0000000a 3px 4px),#f1e2bf;color:#8c0e17;border-radius:0 0 13px 13px}
+.ptop{height:32.2%;background:#b3121d;color:#f1e2bf;border-radius:13px 13px 0 0;transform-origin:100% 100%;transform:rotate(calc(var(--tp,0)*-16deg));transition:transform .15s}
+.ptop::after{content:"";position:absolute;left:0;right:0;top:0;height:12px;background:radial-gradient(circle at 12px 0,#f1e2bf 7px,transparent 7.5px) 0 0/24px 12px repeat-x;pointer-events:none}
+.stub{height:100%;display:flex;justify-content:center;align-items:center;padding:0 16px 5px;font-weight:700;font-size:12px;letter-spacing:.12em;cursor:grab;user-select:none}
+.tearline{position:absolute;left:10px;right:10px;bottom:0;height:2px;border-top:2px dotted #f1e2bf;pointer-events:none;z-index:2}
+.fan{top:5px;height:160px}
+.ticket-brand{position:absolute;left:0;right:0;bottom:16px;text-align:center;color:#8c0e17;font:700 23px/1 "Fifties Movies","Trebuchet MS",sans-serif;letter-spacing:.1em;text-transform:uppercase;text-shadow:0 1px #fff3,0 2px 0 #c9ab7a;transform:rotate(-2deg)}
+.bc{position:absolute;left:16px;right:16px;bottom:14px;height:26px;background:repeating-linear-gradient(90deg,#f1e2bf 0 2px,transparent 2px 4px,#f1e2bf 4px 5px,transparent 5px 8px,#f1e2bf 8px 11px,transparent 11px 12px)}
+.foil{mix-blend-mode:normal;background:linear-gradient(115deg,transparent calc(var(--mx,30%) - 25%),#fffa var(--mx,30%),transparent calc(var(--mx,30%) + 25%))}
+.cut{position:absolute;left:0;top:31.1%;height:3px;width:calc(var(--tp,0)*100%);background:linear-gradient(90deg,#fff0,#fff);box-shadow:0 0 12px 2px #ffd166;z-index:8;pointer-events:none}
+.stk{position:relative;width:min(62vw,290px);aspect-ratio:2/3;z-index:1}
+.sc{position:absolute;inset:0;transform:translate(calc(var(--d,0)*8px),calc(var(--d,0)*-7px)) rotate(calc(var(--d,0)*2.4deg));filter:brightness(calc(1 - var(--d,0)*.17));transition:transform .3s,filter .3s;touch-action:pan-y;cursor:grab}
+.sc .card{width:100%;height:100%}
+.sc.out{z-index:100!important;animation:sout .32s ease-in forwards}
+.collection-item{position:relative;min-width:0}
+.collection-open{display:block;width:100%;padding:0;border:0;background:transparent;text-align:left;white-space:normal}
+.collection-open:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.collection-item .card-favorite,.collection-item .card-select{position:absolute;top:7px;z-index:3;width:32px;height:32px;padding:5px;border:1px solid #fff8;background:#100b0ddd;display:grid;place-items:center}
+.collection-item .card-favorite{left:7px}.collection-item .card-select{right:7px}
+.card-favorite .icon{width:17px;height:17px}.card-favorite.on .icon{fill:var(--gold);color:var(--gold)}
+.card-select .icon{width:16px;height:16px}
+.collection-item.selected .card{outline:2px solid var(--gold);outline-offset:2px}
+.rar-filter{display:inline-flex;align-items:center;gap:6px}
+.rar-filter::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--rar-color,var(--gold));box-shadow:0 0 7px var(--rar-color,var(--gold))}
+.collection-tools{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:10px 0}
+.collection-tools .row{justify-content:flex-start}
+.pagination{display:flex;align-items:center;justify-content:center;gap:12px;margin:18px 0}
+.pagination button{min-width:80px}
+.modal{position:fixed;inset:0;z-index:30;background:#000d;display:none;align-items:center;justify-content:center;padding:18px}
+.modal.on{display:flex}
+.card-dialog{position:relative;width:min(100%,520px);max-height:90vh;overflow:auto;background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:20px;box-shadow:0 18px 60px #000}
+.card-dialog-grid{display:grid;grid-template-columns:minmax(0,180px) minmax(0,1fr);align-items:center;gap:20px}
+.card-dialog .card{width:100%}
+.card-dialog h2{margin:0 0 6px}
+.card-dialog .row{justify-content:flex-start;margin-top:12px}
+.card-dialog input{width:100px}
+.tmdb-link{display:inline-block;margin:2px 0 8px;color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+.dialog-close{position:absolute;right:12px;top:12px;width:36px;height:36px;padding:0;display:grid;place-items:center}
+.money{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.money .icon{width:17px;height:17px;color:var(--gold)}
+.award-icon{width:24px;height:24px;color:var(--gold);vertical-align:middle;margin-right:5px}
+.director-album{display:flex;flex-direction:column;align-items:flex-start;gap:8px;white-space:normal;text-align:left;min-height:84px}
+.director-album .bar{width:100%}
+.back-album{margin:8px 0;border:1px solid #9b7141;background:#251719;border-radius:9px;padding:8px 12px;box-shadow:0 2px 8px #0005}
+.back-album:hover,.back-album:focus-visible{border-color:var(--gold);background:#332019}
+.profile-badge{width:76px;height:76px;border:2px solid var(--gold);border-radius:50%;display:grid;place-items:center;background:var(--bg);color:var(--gold);font-size:1.35rem;font-weight:700;letter-spacing:.04em}
+.profile-badge .icon{width:38px;height:38px}
+.selection-tools{padding:10px 12px;background:linear-gradient(135deg,#251719,#171012);border:1px solid #785221;border-radius:12px;box-shadow:0 0 12px #e8b84a22}
+.selection-tools button{border-color:#9b7141;background:#332019}
+.profile-bio{width:100%;min-height:84px;resize:vertical}
+.auction-card{min-width:0;overflow:hidden}
+.auction-card .card{width:100%}
+.auction-card .mu{font-size:.88rem}
+.auction-meta{min-width:0;grid-template-columns:minmax(0,1fr);overflow-wrap:anywhere;word-break:break-word}
+.auction-meta b,.auction-meta span{min-width:0;overflow-wrap:anywhere}
+.auction-open{display:block;width:100%;padding:0;border:0;background:transparent;white-space:normal}
+.auction-open:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.auction-dialog{position:relative;width:min(100%,520px);max-height:90dvh;overflow:auto;background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:20px;box-shadow:0 18px 60px #000}
+.auction-dialog-grid{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr);gap:18px;align-items:center}
+.auction-dialog .card{width:100%}
+.auction-dialog-info{min-width:0;overflow-wrap:anywhere}
+.auction-dialog-info input{width:min(100%,150px)}
+.coin-button{display:inline-flex;align-items:center;gap:8px}
+.shop-product{text-align:center}
+.friend-profile{display:flex;align-items:center;gap:10px}
+.friend-avatar{width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--gold);border-radius:50%;color:var(--gold);font-size:1.2rem}
+.friend-name{border:0;background:transparent;padding:4px 2px;font-weight:700;white-space:normal;text-align:left}
+.friend-name:hover,.friend-name:focus-visible{color:var(--gold);text-decoration:underline}
+.album-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;white-space:normal;text-align:left;min-height:84px}
+.auction-meta{display:grid;gap:5px}
+.auction-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.wallet-products{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+.auction-list{grid-template-columns:repeat(auto-fill,minmax(min(180px,100%),1fr))}
+@media(max-width:700px){
+ body::before,body::after{width:10px;opacity:.35}
+ header{padding:10px 12px 4px;gap:8px}
+ header h1{font-size:clamp(1rem,5vw,1.35rem)}
+ main{padding:8px 12px calc(28px + env(safe-area-inset-bottom,0px))}
+ .mq{height:42px}
+ #nav{padding:5px 12px}
+ .grid{grid-template-columns:repeat(auto-fill,minmax(min(145px,calc(50% - 8px)),1fr));gap:9px}
+ .mini{grid-template-columns:repeat(auto-fill,minmax(min(105px,calc(50% - 6px)),1fr))}
+ .auction-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .auction-card{padding:9px}
+ .auction-card .card{max-width:180px;margin:0 auto}
+ .auction-meta{font-size:.9rem}
+ .card-dialog-grid,.auction-dialog-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+ .card-dialog-grid>div:first-child,.auction-dialog-poster{width:min(48%,180px);margin:0 auto}
+ button{white-space:normal}
+ .row>*{min-width:0}
+ .card-dialog .row button,.auction-dialog .auction-actions button{flex:1}
+ .auction-dialog-info{width:100%}
+ .card-dialog{padding:16px}
+ .auction-dialog{padding:16px}
+ .coin-button{padding:5px 8px}
+}
+@media(max-width:380px){
+ header{padding-inline:8px;gap:4px}
+ header>span:first-child{gap:6px}
+ header>span:last-child{gap:4px}
+ header h1{font-size:.92rem;letter-spacing:.02em}
+ .brand-icon{width:25px;height:25px}
+ #hb{width:32px;height:32px}
+ #mb{width:32px;margin-left:0}
+ .pts{font-size:.9rem}
+ .coin-button{gap:4px;padding:4px 6px;font-size:.86rem}
+ .coin-button .currency-icon{width:18px;height:18px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .card-dialog,.auction-dialog{padding:14px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style></head><body>
+<svg aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden">
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+<symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6l-5 4H4zM16 9a5 5 0 0 1 0 6M18 5a10 10 0 0 1 0 14"/></symbol>
+<symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6l-5 4H4zM17 9l5 6m0-6-5 6"/></symbol>
+<symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4m-4 6h4m10-6h4m-4 6h4"/></symbol>
+<symbol id="i-ticket" viewBox="0 0 24 24"><path d="M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4V6zM12 7v2m0 3v2m0 3v1"/></symbol>
+<symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 3h8v4a4 4 0 0 1-8 0V3zm0 2H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4m-4 2v5m-4 2h12m-10-2h8"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1H3zm13-9a3 3 0 1 0 0-6m1 9a5 5 0 0 1 4 5"/></symbol>
+<symbol id="i-club" viewBox="0 0 24 24"><circle cx="7" cy="6" r="3"/><circle cx="14" cy="6" r="3"/><path d="M5 11h10l3 3v4H5zM18 14h3v3h-3m-9 1v4m-3 0h9m-3-10v6m6-4 2-2"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.7 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.7-1l-1.7.7-1.4-2.4 1.4-1.1a7 7 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.7-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.7 1l1.7-.7 1.4 2.4-1.4 1.1a7 7 0 0 1 0 2z"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 8.8c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.8 4.8 0 0 1 8.8-2.7 4.8 4.8 0 0 1 8.8 2.7z"/></symbol>
+<symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="7"/><path d="M9 8h5m-5 0v8m0-4h5m-5 4h5m-1-8 2 4-2 4"/></symbol>
+<symbol id="i-stand" viewBox="0 0 24 24"><path d="M3 8h18v11H3zM2 5l2-3h16l2 3v3H2zm3 3v2a2 2 0 0 0 4 0V8m0 0v2a2 2 0 0 0 4 0V8m0 0v2a2 2 0 0 0 4 0V8m0 0v2a2 2 0 0 0 4 0V8M6 13h5v6m4-6h3v3h-3m-9 5h12"/></symbol>
+<symbol id="i-shop" viewBox="0 0 24 24"><path d="M3 9h18v12H3zM2 5l2-3h16l2 3v4H2zm4 4v2a2 2 0 0 0 4 0V9m0 0v2a2 2 0 0 0 4 0V9m0 0v2a2 2 0 0 0 4 0V9M7 14h4v7m3-7h4v4h-4"/></symbol>
+<symbol id="i-cross" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+<symbol id="award-a1" viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></symbol>
+<symbol id="award-a2" viewBox="0 0 24 24"><path d="M12 3 4 7v5c0 5 4 8 8 9 4-1 8-4 8-9V7l-8-4zM8 12l3 3 5-6"/></symbol>
+<symbol id="award-a3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m12 6 1.8 4 4.2.4-3.2 2.8.9 4.2-3.7-2.2-3.7 2.2.9-4.2L6 10.4l4.2-.4L12 6z"/></symbol>
+<symbol id="award-a4" viewBox="0 0 24 24"><path d="M4 19V9l4-3 4 3v10m0-7h8v7m-13-5h2m-2 3h2m8-1h1m-1 3h1M3 20h18"/></symbol>
+<symbol id="award-a5" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="m8 14-1 7 5-3 5 3-1-7m-4-9v5m-2-2h4"/></symbol>
+<symbol id="award-a6" viewBox="0 0 24 24"><path d="m12 3 2.2 5 5.4.6-4 3.6 1.1 5.3-4.7-2.7-4.7 2.7 1.1-5.3-4-3.6 5.4-.6L12 3zM8 18l-1 4m9-4 1 4"/></symbol>
+<symbol id="award-a7" viewBox="0 0 24 24"><path d="m4 8 4 4 4-8 4 8 4-4-2 12H6L4 8zM7 17h10"/></symbol>
+<symbol id="award-a8" viewBox="0 0 24 24"><path d="M5 4h14v16H5zM9 4v16m6-16v16M5 9h14m-14 6h14"/></symbol>
+<symbol id="award-a9" viewBox="0 0 24 24"><path d="M4 6h16v14H4zM8 6V4h8v2m-8 5h8m-8 4h5"/></symbol>
+<symbol id="award-a10" viewBox="0 0 24 24"><path d="m3 12 5-5 5 5-5 5-5-5zm8 0 5-5 5 5-5 5-5-5zm-4-5 3-3 5 5m2 8-3 3-5-5"/></symbol>
+<symbol id="award-a11" viewBox="0 0 24 24"><path d="M4 10h16v10H4zM3 7h18v3H3zm4 0V4m5 3V3m5 4V4M8 14h8m-8 3h5"/></symbol>
+<symbol id="award-a12" viewBox="0 0 24 24"><path d="M12 3 21 8v8l-9 5-9-5V8l9-5z"/><path d="M8 12h8m-4-4v8"/></symbol>
+<symbol id="brand-mark" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 7h3m-3 5h3m-3 5h3m10-10h3m-3 5h3m-3 5h3M9 17V7h7m-7 5h6"/></symbol>
+</svg>
+<header><span style="display:flex;align-items:center;gap:10px"><button id="hb" data-a="menu" aria-label="Ouvrir le menu"><svg class="icon"><use href="#i-menu"/></svg></button><svg class="brand-icon" viewBox="0 0 24 24" aria-label="Logo cinéma FilmoMasters"><use href="#brand-mark"/></svg><h1>FilmoMasters</h1></span><span style="display:flex;align-items:center;gap:8px"><button class="pts coin-button" data-a="wallet" aria-label="Voir mon solde et la boutique"><svg class="currency-icon" aria-hidden="true"><use href="#i-coin"/></svg><span id="pts">0</span></button><button id="mb" data-a="mute" aria-label="Désactiver le son"><svg class="icon"><use href="#i-sound"/></svg></button></span></header><div class="mq"><svg viewBox="-100 0 1400 58" preserveAspectRatio="none" aria-hidden="true"><path d="M-220 5Q600 92 1420 5"/><circle cx="-100" cy="17" r="3"/><circle cx="75" cy="31" r="3"/><circle cx="250" cy="41" r="3"/><circle cx="425" cy="46" r="3"/><circle cx="600" cy="48" r="3"/><circle cx="775" cy="46" r="3"/><circle cx="950" cy="41" r="3"/><circle cx="1125" cy="31" r="3"/><circle cx="1300" cy="17" r="3"/></svg></div>
+<aside id="dr"><div id="nav"></div></aside><div id="bd" data-a="menu"></div><main id="main"></main><div class="ov" id="ov"></div><div class="modal" id="card-modal" data-a="closemodal" role="presentation"></div><div class="modal" id="wallet-modal" data-a="closewallet" role="presentation"></div><div class="modal" id="auction-modal" data-a="closeauction" role="presentation"></div><div id="toast"></div>
+<script type="module">
+const DEMO_FILMS=`Pulp Fiction|Quentin Tarantino|1994|4000|p
+Parasite|Bong Joon-ho|2019|3300|pc
+Fight Club|David Fincher|1999|4200
+Inception|Christopher Nolan|2010|4700
+Interstellar|Christopher Nolan|2014|3800
+The Dark Knight|Christopher Nolan|2008|4600
+Oppenheimer|Christopher Nolan|2023|2700
+Memento|Christopher Nolan|2000|2100
+Django Unchained|Quentin Tarantino|2012|3500
+Inglourious Basterds|Quentin Tarantino|2009|3600
+Reservoir Dogs|Quentin Tarantino|1992|1900
+Kill Bill: Vol. 1|Quentin Tarantino|2003|2800
+Once Upon a Time in Hollywood|Quentin Tarantino|2019|2200|c
+Se7en|David Fincher|1995|3100
+The Social Network|David Fincher|2010|2000
+Gone Girl|David Fincher|2014|2300
+Zodiac|David Fincher|2007|1000
+The Shining|Stanley Kubrick|1980|2300
+2001 : l’Odyssée de l’espace|Stanley Kubrick|1968|1800
+Orange mécanique|Stanley Kubrick|1971|2300
+Full Metal Jacket|Stanley Kubrick|1987|1300
+Taxi Driver|Martin Scorsese|1976|1700|p
+Les Affranchis|Martin Scorsese|1990|2100
+Les Infiltrés|Martin Scorsese|2006|2300
+Raging Bull|Martin Scorsese|1980|900
+Apocalypse Now|Francis Ford Coppola|1979|1400|p
+Le Parrain|Francis Ford Coppola|1972|2500
+Dune|Denis Villeneuve|2021|2400
+Blade Runner 2049|Denis Villeneuve|2017|1500
+Premier Contact|Denis Villeneuve|2016|1600
+Sicario|Denis Villeneuve|2015|900
+Le Voyage de Chihiro|Hayao Miyazaki|2001|1500
+Princesse Mononoké|Hayao Miyazaki|1997|900
+Mon voisin Totoro|Hayao Miyazaki|1988|1000
+Le Château ambulant|Hayao Miyazaki|2004|800
+Memories of Murder|Bong Joon-ho|2003|450
+Snowpiercer|Bong Joon-ho|2013|900
+Mother|Bong Joon-ho|2009|200
+Okja|Bong Joon-ho|2017|400
+Titane|Julia Ducournau|2021|200|p
+Anatomie d’une chute|Justine Triet|2023|500|p
+Anora|Sean Baker|2024|300|p
+Paris, Texas|Wim Wenders|1984|150|p
+Le Fabuleux Destin d’Amélie Poulain|Jean-Pierre Jeunet|2001|1400
+La Haine|Mathieu Kassovitz|1995|550
+Les Quatre Cents Coups|François Truffaut|1959|250|n
+À bout de souffle|Jean-Luc Godard|1960|200|n
+Cléo de 5 à 7|Agnès Varda|1962|90|n
+Portrait de la jeune fille en feu|Céline Sciamma|2019|900|c
+Mulholland Drive|David Lynch|2001|800
+Eraserhead|David Lynch|1977|120
+Stalker|Andreï Tarkovski|1979|110
+Les Sept Samouraïs|Akira Kurosawa|1954|600
+Sans soleil|Chris Marker|1983|30
+Jeanne Dielman|Chantal Akerman|1975|50`.split("\n").map((l,i)=>{const a=l.split("|");return{id:i,t:a[0],d:a[1],y:+a[2],k:+a[3],g:a[4]||""}});
+// k = nombre de visionnages Letterboxd (en milliers, valeurs indicatives)
+let usesTmdbCatalog=false;
+async function loadCatalog(){
+try{
+const response=await fetch("/films.json",{cache:"no-store"});
+if(!response.ok)throw new Error(`films.json : HTTP ${response.status}`);
+const data=await response.json();
+if(!Array.isArray(data))throw new Error("films.json doit contenir une liste de films.");
+const films=data.filter(f=>f&&Number.isSafeInteger(Number(f.id))&&String(f.t||"").trim()&&String(f.d||"").trim()&&Number.isFinite(Number(f.y))&&Number.isFinite(Number(f.k)));
+if(!films.length)throw new Error("films.json ne contient aucun film valide.");
+usesTmdbCatalog=true;
+return films.map(f=>({id:Number(f.id),t:String(f.t).trim(),d:String(f.d).trim(),y:Number(f.y),k:Number(f.k),g:Array.isArray(f.g)?f.g.map(String):typeof f.g==="string"?f.g:[],p:typeof f.p==="string"?f.p:"",img:typeof f.img==="string"?f.img:"",adult:f.adult===true,r:Number.isInteger(Number(f.r))?Math.max(0,Math.min(6,Number(f.r))):undefined}));
+}catch(error){
+const message=error instanceof Error?error.message:String(error);
+console.warn("Catalogue de films indisponible :",message);
+return DEMO_FILMS;
+}
+}
+let F=await loadCatalog();
+const FILM_BY_ID=new Map(F.map(f=>[f.id,f]));
+const getFilm=id=>FILM_BY_ID.get(Number(id));
+const R=[["Commun",0],["Peu commun",250],["Rare",600],["Super rare",1300],["Ultra rare",2300],["Légendaire",3500],["Pornographique",Infinity]];
+const rar=f=>f.adult===true||f.r===6?6:Number.isInteger(f.r)?f.r:R.slice(0,6).reduce((r,x,i)=>f.k>=x[1]?i:r,0);
+const PR=[5,12,30,70,150,400,1000],W=[50,25,14,7,3,1,.2];
+const byR=R.map((_,i)=>F.filter(f=>rar(f)==i));
+const boosterFeaturedFilms=[...byR[5]];
+for(let i=boosterFeaturedFilms.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[boosterFeaturedFilms[i],boosterFeaturedFilms[j]]=[boosterFeaturedFilms[j],boosterFeaturedFilms[i]]}
+const featuredCount=boosterFeaturedFilms.length;
+while(featuredCount>0&&boosterFeaturedFilms.length<3)boosterFeaturedFilms.push(boosterFeaturedFilms[boosterFeaturedFilms.length%featuredCount]);
+function rng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function pickW(r=Math.random){const available=byR.map((films,i)=>({films,weight:W[i]})).filter(x=>x.films.length);const total=available.reduce((sum,x)=>sum+x.weight,0);let x=r()*total;for(const pool of available){x-=pool.weight;if(x<0)return pool.films[Math.floor(r()*pool.films.length)]}const last=available.at(-1);return last.films[Math.floor(r()*last.films.length)]}
+const $=s=>document.querySelector(s);
+const K=usesTmdbCatalog?"filmo_tmdb_v1":"filmo_v2";let S=null;
+try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
+if(!S)S={stock:10,t:Date.now(),pts:0,col:{},fav:{},ach:{},opened:0,sold:0,trades:0,list:[],friends:["Léa","Malik"],club:null,mk:null,bots:{},playerName:"Utilisateur",playerBio:"",playerAvatar:"FM",discoveryQueue:[],discoveryYear:new Date().getFullYear(),discoveryPage:1,discoveryMonth:0};
+if(!S.fav||typeof S.fav!=="object")S.fav={};
+if(typeof S.playerName!=="string")S.playerName="Utilisateur";
+if(S.playerName==="Cinéphile")S.playerName="Utilisateur";
+if(typeof S.playerBio!=="string")S.playerBio="";
+if(typeof S.playerAvatar!=="string")S.playerAvatar="FM";
+S.playerAvatar=S.playerAvatar==="film"?"FM":S.playerAvatar.replace(/[^\p{L}\p{N}]/gu,"").slice(0,3)||"FM";
+if(!Array.isArray(S.list))S.list=[];
+if(!Array.isArray(S.friends))S.friends=["Léa","Malik"];
+if(!Array.isArray(S.mk))S.mk=null;
+S.list=S.list.map(listing=>({...listing,durationMs:Number.isInteger(listing.durationMs)&&listing.durationMs>=3600000&&listing.durationMs<=43200000?listing.durationMs:3600000,bid:Number.isSafeInteger(listing.bid)&&listing.bid>0?listing.bid:0,bidder:typeof listing.bidder==="string"?listing.bidder:null}));
+if(!Array.isArray(S.discoveryQueue))S.discoveryQueue=[];
+if(!Number.isInteger(S.discoveryYear))S.discoveryYear=new Date().getFullYear();
+if(!Number.isInteger(S.discoveryPage)||S.discoveryPage<1||S.discoveryPage>500)S.discoveryPage=1;
+if(!Number.isInteger(S.discoveryMonth)||S.discoveryMonth<0||S.discoveryMonth>12)S.discoveryMonth=0;
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){console.error("Impossible d’enregistrer la sauvegarde :",e)}};
+function openDiscoveryDatabase(){
+return new Promise((resolve,reject)=>{
+const request=indexedDB.open("filmomasters-discoveries",1);
+request.onupgradeneeded=()=>request.result.createObjectStore("films",{keyPath:"id"});
+request.onsuccess=()=>resolve(request.result);
+request.onerror=()=>reject(request.error||new Error("Impossible d’ouvrir la base des films découverts."));
+});
+}
+const discoveryDb=await openDiscoveryDatabase();
+function readDiscoveredFilms(){
+return new Promise((resolve,reject)=>{
+const request=discoveryDb.transaction("films","readonly").objectStore("films").getAll();
+request.onsuccess=()=>resolve(request.result);
+request.onerror=()=>reject(request.error||new Error("Impossible de lire les films découverts."));
+});
+}
+function storeDiscoveredFilms(films){
+if(!films.length)return Promise.resolve();
+return new Promise((resolve,reject)=>{
+const transaction=discoveryDb.transaction("films","readwrite");
+const store=transaction.objectStore("films");
+films.forEach(film=>store.put(film));
+transaction.oncomplete=resolve;
+transaction.onabort=()=>reject(transaction.error||new Error("Échec de l’enregistrement des films découverts."));
+transaction.onerror=()=>reject(transaction.error||new Error("Échec de l’enregistrement des films découverts."));
+});
+}
+function registerFilm(f){
+if(FILM_BY_ID.has(f.id))return false;
+F.push(f);FILM_BY_ID.set(f.id,f);byR[rar(f)].push(f);return true;
+}
+const storedFilms=await readDiscoveredFilms();
+const legacyFilms=(Array.isArray(S.extraFilms)?S.extraFilms:[]).filter(f=>f&&Number.isSafeInteger(Number(f.id))&&String(f.t||"").trim()&&Number.isFinite(Number(f.y))&&Number.isFinite(Number(f.k))).map(f=>({id:Number(f.id),t:String(f.t).trim(),o:String(f.o||""),d:String(f.d||"Film à découvrir"),y:Number(f.y),k:Number(f.k),g:Array.isArray(f.g)?f.g.map(String):[],p:typeof f.p==="string"?f.p:"",img:"",adult:f.adult===true||Number(f.r)===6,r:Number.isInteger(Number(f.r))?Math.max(0,Math.min(6,Number(f.r))):0}));
+await storeDiscoveredFilms(legacyFilms);
+delete S.extraFilms;
+[...storedFilms,...legacyFilms].forEach(f=>registerFilm({id:Number(f.id),t:String(f.t||"").trim(),o:String(f.o||""),d:String(f.d||"Film à découvrir"),y:Number(f.y),k:Number(f.k)||0,g:Array.isArray(f.g)?f.g.map(String):[],p:typeof f.p==="string"?f.p:"",img:"",adult:f.adult===true||Number(f.r)===6,r:Number.isInteger(Number(f.r))?Math.max(0,Math.min(6,Number(f.r))):0}));
+S.discoveryQueue=S.discoveryQueue.filter(id=>FILM_BY_ID.has(Number(id))).map(Number);
+save();
+let tab="b",fs="c",rf=-1,trf=null,last=[],collectionPage=1,favOnly=false,selectedIds=new Set(),cardModalId=null,albumDirector=null,albumCategory=null,profileFriend=null,auctionModal=null;
+function toast(m){const t=$("#toast");t.classList.remove("coin-toast");t.textContent=m;t.classList.add("s");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("s"),2200)}
+function toastMoney(prefix,amount,suffix=""){const t=$("#toast"),icon=document.createElementNS("http://www.w3.org/2000/svg","svg"),use=document.createElementNS("http://www.w3.org/2000/svg","use");icon.setAttribute("class","currency-icon");icon.setAttribute("aria-hidden","true");use.setAttribute("href","#i-coin");icon.append(use);t.replaceChildren(document.createTextNode(prefix),icon,document.createTextNode(`${amount}${suffix}`));t.classList.add("coin-toast","s");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("s","coin-toast"),2200)}
+const money=value=>`<span class="money"><svg class="currency-icon" aria-hidden="true"><use href="#i-coin"/></svg>${value}</span>`;
+function refill(){const n=Date.now();if(S.stock>=10){S.t=n;return}const g=Math.floor((n-S.t)/6e5);if(g>0){S.stock=Math.min(10,S.stock+g);S.t=S.stock>=10?n:S.t+g*6e5;save()}}
+function bot(n){if(!S.bots[n]){let h=0;for(const c of n)h=h*31+c.charCodeAt(0)|0;const r=rng(h),c={};for(let i=0;i<30;i++){const f=pickW(r);c[f.id]=(c[f.id]||0)+1}S.bots[n]=c}return S.bots[n]}
+const HOUR=3600000;
+const validDuration=ms=>Number.isInteger(ms)&&ms>=HOUR&&ms<=12*HOUR;
+function genMk(){const r=rng(Date.now()>>>10),nm=["Léa","Malik","Chloé","Hugo","Nora","Elias","Zoé","Sam"],now=Date.now();S.mk=[];for(let i=0;i<8;i++){const f=pickW(r),durationMs=(2+Math.floor(r()*5))*HOUR;S.mk.push({id:f.id,s:nm[Math.floor(r()*nm.length)],p:Math.round(PR[rar(f)]*(.8+r()*.6)),at:now,durationMs,bid:0,bidder:null,npcBidAt:now+durationMs/3,npcBidder:nm[Math.floor(r()*nm.length)]})}}
+if(!Array.isArray(S.mk)||S.mk.some(l=>!getFilm(l.id)))genMk();
+else S.mk=S.mk.map(l=>({...l,at:Number.isSafeInteger(l.at)?l.at:Date.now(),durationMs:validDuration(l.durationMs)?l.durationMs:6*HOUR,bid:Number.isSafeInteger(l.bid)&&l.bid>0?l.bid:0,bidder:typeof l.bidder==="string"?l.bidder:null,npcBidAt:Number.isSafeInteger(l.npcBidAt)?l.npcBidAt:Date.now()+2*HOUR/3,npcBidder:typeof l.npcBidder==="string"?l.npcBidder:"Cinéphile"}));
+S.list=S.list.map(l=>({...l,botBidAt:Number.isSafeInteger(l.botBidAt)?l.botBidAt:l.at+Math.min(15*60000,l.durationMs/3)}));
+const timeLeft=ends=>{const sec=Math.max(0,Math.ceil((ends-Date.now())/1000));return sec>=3600?`${Math.floor(sec/3600)} h ${String(Math.floor(sec%3600/60)).padStart(2,"0")} min`:`${Math.floor(sec/60)} min ${String(sec%60).padStart(2,"0")} s`};
+let discoveryLoading=false;
+async function discoverNextBatch(){
+if(discoveryLoading||S.discoveryComplete)return false;
+discoveryLoading=true;
+try{
+for(let attempt=0;attempt<12;attempt++){
+if(S.discoveryYear<1870){S.discoveryComplete=true;save();return false}
+const year=S.discoveryYear,page=S.discoveryPage,month=S.discoveryMonth;
+const params=new URLSearchParams({year:String(year),page:String(page)});
+if(month)params.set("month",String(month));
+const response=await fetch(`/api/tmdb/discover?${params}`);
+const data=await response.json();
+if(!response.ok)throw new Error(data.error||`TMDB : HTTP ${response.status}`);
+const totalPages=Math.max(1,Math.min(500,Number(data.totalPages)||1));
+const results=Array.isArray(data.results)?data.results:[];
+let nextYear=year,nextPage=page+1,nextMonth=month;
+if(!month&&totalPages>=500&&page>=500){nextMonth=12;nextPage=1}
+else if(page>=totalPages){
+if(month>1)nextMonth=month-1;
+else{nextYear=year-1;nextMonth=0}
+nextPage=1;
+}
+const additions=[];
+for(const film of results){
+if(!film||!Number.isSafeInteger(Number(film.id))||!String(film.t||"").trim()||!Number.isFinite(Number(film.y)))continue;
+const normalized={id:Number(film.id),t:String(film.t).trim(),o:String(film.o||""),d:String(film.d||"Film à découvrir"),y:Number(film.y),k:Number(film.k)||0,g:Array.isArray(film.g)?film.g.map(String):[],p:typeof film.p==="string"?film.p:"",img:"",adult:film.adult===true,r:Number.isInteger(Number(film.r))?Math.max(0,Math.min(6,Number(film.r))):0};
+if(!FILM_BY_ID.has(normalized.id)&&!additions.some(item=>item.id===normalized.id))additions.push(normalized);
+}
+await storeDiscoveredFilms(additions);
+additions.forEach(film=>{registerFilm(film);S.discoveryQueue.push(film.id)});
+S.discoveryYear=nextYear;S.discoveryPage=nextPage;S.discoveryMonth=nextMonth;
+save();
+if(additions.length)return true;
+}
+return false;
+}catch(error){
+const message=error instanceof Error?error.message:String(error);
+console.error("Découverte TMDB impossible :",message);
+return false;
+}finally{discoveryLoading=false}
+}
+function drawPack(){
+last=[];
+const discovered=getFilm(S.discoveryQueue.shift());
+if(discovered){last.push({f:discovered,nw:!S.col[discovered.id]});S.col[discovered.id]=(S.col[discovered.id]||0)+1}
+while(last.length<5){const f=pickW();last.push({f,nw:!S.col[f.id]});S.col[f.id]=(S.col[f.id]||0)+1}
+last.sort((a,b)=>rar(a.f)-rar(b.f));
+S.opened++;save();
+if(S.discoveryQueue.length<5)void discoverNextBatch();
+}
+const hue=f=>(f.id*47+f.t.length*13)%360;
+const esc=value=>String(value).replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+const RARITY_SHORT=["C","PC","R","SR","UR","L","P"];
+const card=(f,n,eager=false)=>{const src=typeof f.img==="string"&&/^data:image\/(?:jpeg|png|webp);base64,/.test(f.img)?f.img:typeof f.p==="string"&&f.p.startsWith("/")?`https://image.tmdb.org/t/p/w342${f.p}`:"";const art=src?`<img class="pi" src="${esc(src)}" alt="" loading="${eager?"eager":"lazy"}" referrerpolicy="no-referrer">`:PO[f.t]?`<div class="pi" style="background-image:${poster(f)}"></div>`:"";return`<div class="card r${rar(f)}" style="--h:${hue(f)}" title="${esc(f.t)}"><div class="ps">${esc(f.t[0]||"F")}</div>${art}<div class="rb">${RARITY_SHORT[rar(f)]}</div>${n>1?`<div class="n">×${n}</div>`:""}<div class="ft"><div><b>${esc(f.t)}</b><small>${esc(f.d)}</small></div><span>${f.y}</span></div></div>`};
+const ghost=f=>`<div class="card gh" style="--h:0;--rc:var(--bd)"><div class="ps">?</div><div class="ft"><div><b>${esc(f.t)}</b><small>${f.y}</small></div></div></div>`;
+const owned=()=>F.filter(f=>S.col[f.id]);
+const DIRECTORS=["Christopher Nolan","Quentin Tarantino","Stanley Kubrick","David Fincher","Martin Scorsese","Denis Villeneuve","Hayao Miyazaki","Bong Joon-ho"];
+const directorFilms=name=>F.filter(f=>f.d===name);
+const TITLE_SETS=[
+{id:"oscars",name:"Lauréats des Oscars",films:["The Godfather","The Lord of the Rings: The Return of the King","Parasite","Moonlight","Nomadland","Everything Everywhere All at Once","Oppenheimer","The Shape of Water","Spotlight","12 Years a Slave","No Country for Old Men","Gladiator","Titanic","Schindler's List","Casablanca"]},
+{id:"cesars",name:"Lauréats des César",films:["Les Misérables","Amour","The Artist","La Haine","Fatima","120 battements par minute","Jusqu'à la garde","Adieu les cons","Illusions perdues","Anatomy of a Fall"]},
+{id:"cannes",name:"Palme d’or — Cannes",films:["Parasite","Shoplifters","The Square","I, Daniel Blake","Dheepan","Winter Sleep","Blue Is the Warmest Colour","The Tree of Life","Uncle Boonmee Who Can Recall His Past Lives","The White Ribbon","4 Months, 3 Weeks and 2 Days","The Pianist","Dancer in the Dark","Pulp Fiction","Barton Fink","Farewell My Concubine","The Piano","Wild at Heart","Kagemusha","Apocalypse Now"]},
+{id:"venice",name:"Lion d’or — Venise",films:["Poor Things","All the Beauty and the Bloodshed","Happening","Joker","Roma","The Shape of Water","The Woman Who Left","From Afar","A Pigeon Sat on a Branch Reflecting on Existence","Sacro GRA","Pietà","Faust","Somewhere","Lebanon","The Wrestler"]},
+{id:"nouvelle-vague",name:"Nouvelle Vague",films:["The 400 Blows","Breathless","Hiroshima Mon Amour","Cléo from 5 to 7","Jules and Jim","Vivre sa vie","Le Samouraï","Weekend","Pierrot le Fou","Last Year at Marienbad","La Jetée","Shoot the Piano Player","Contempt","Elevator to the Gallows","The Cousins"]},
+{id:"sight-sound",name:"Sight and Sound 2022 — sélection de 25 films",films:["Jeanne Dielman, 23 quai du Commerce, 1080 Bruxelles","Vertigo","Citizen Kane","Tokyo Story","In the Mood for Love","2001: A Space Odyssey","Beau Travail","Mulholland Drive","Man with a Movie Camera","Singin' in the Rain","The Godfather","8½","Mirror","Close-Up","Persona","The Rules of the Game","Do the Right Thing","Rashomon","The Searchers","Apocalypse Now","Seven Samurai","The Passion of Joan of Arc","Bicycle Thieves","Sunrise: A Song of Two Humans","La Dolce Vita"]}
+];
+const TITLE_ALIASES={"The Godfather":["Le Parrain"],"The Lord of the Rings: The Return of the King":["Le Retour du roi"],"The Shape of Water":["La Forme de l'eau"],"Schindler's List":["La Liste de Schindler"],"Shoplifters":["Une affaire de famille"],"Winter Sleep":["Sommeil d'hiver"],"Blue Is the Warmest Colour":["La Vie d'Adèle"],"The White Ribbon":["Le Ruban blanc"],"The Pianist":["Le Pianiste"],"The Piano":["La Leçon de piano"],"Wild at Heart":["Sailor et Lula"],"Happening":["L'Événement"],"The 400 Blows":["Les Quatre Cents Coups"],"Breathless":["À bout de souffle"],"Hiroshima Mon Amour":["Hiroshima mon amour"],"Cléo from 5 to 7":["Cléo de 5 à 7"],"Jules and Jim":["Jules et Jim"],"Weekend":["Week-end"],"Pierrot le Fou":["Pierrot le fou"],"Last Year at Marienbad":["L'Année dernière à Marienbad"],"Shoot the Piano Player":["Tirez sur le pianiste"],"Contempt":["Le Mépris"],"Elevator to the Gallows":["Ascenseur pour l'échafaud"],"The Cousins":["Les Cousins"],"Jeanne Dielman, 23 quai du Commerce, 1080 Bruxelles":["Jeanne Dielman"],"Tokyo Story":["Voyage à Tokyo"],"2001: A Space Odyssey":["2001 : l’Odyssée de l’espace"],"Man with a Movie Camera":["L'Homme à la caméra"],"Singin' in the Rain":["Chantons sous la pluie"],"8½":["Huit et demi"],"Mirror":["Le Miroir"],"The Rules of the Game":["La Règle du jeu"],"Do the Right Thing":["Faites le mur"],"The Searchers":["La Prisonnière du désert"],"Seven Samurai":["Les Sept Samouraïs"],"The Passion of Joan of Arc":["La Passion de Jeanne d'Arc"],"Bicycle Thieves":["Le Voleur de bicyclette"],"Sunrise: A Song of Two Humans":["L'Aurore"],"Anatomy of a Fall":["Anatomie d'une chute"]};
+const normTitle=value=>value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");
+const titleKeys=title=>new Set([title,...(TITLE_ALIASES[title]||[])].map(normTitle));
+const findTitleFilm=title=>{const keys=titleKeys(title);return F.find(f=>keys.has(normTitle(f.t))||keys.has(normTitle(f.o||"")))};
+const titleFilms=titles=>{const keys=new Set(titles.flatMap(title=>[...titleKeys(title)]));return F.filter(f=>keys.has(normTitle(f.t))||keys.has(normTitle(f.o||"")))};
+const albumEntries=set=>set.films.map(title=>findTitleFilm(title)||{id:null,t:title,y:"—",placeholder:true});
+const albDone=()=>DIRECTORS.some(name=>{const films=directorFilms(name);return films.length>0&&films.every(f=>S.col[f.id])})||TITLE_SETS.some(set=>{const entries=albumEntries(set);return entries.length>0&&entries.every(f=>f.id!==null&&S.col[f.id])});
+const mx=()=>Math.max(-1,...owned().map(rar));
+const AC=[["a1","Première séance","Ouvrir un booster",10,()=>S.opened>=1],["a2","Habitué","Ouvrir 10 boosters",40,()=>S.opened>=10],["a3","Cinéphile","Posséder 25 films différents",50,()=>owned().length>=25],["a4","Cinémathèque","Posséder 40 films différents",120,()=>owned().length>=40],["a5","Coup de cœur","Obtenir une carte rare ou mieux",20,()=>mx()>=2],["a6","Palme du hasard","Obtenir une ultra rare ou mieux",60,()=>mx()>=4],["a7","Légende vivante","Obtenir une légendaire",150,()=>owned().some(f=>rar(f)===5)],["a8","Albumiste","Compléter un album",100,albDone],["a9","Marchand de rêves","Vendre une carte au Festival",30,()=>S.sold>=1],["a10","Troc de cinéphiles","Réussir un échange avec un ami",30,()=>S.trades>=1],["a11","Esprit de club","Rejoindre un cinéclub",25,()=>!!S.club],["a12","Première P","Obtenir une carte P",100,()=>owned().some(f=>rar(f)===6)]];
+const CL=[{n:"Les Cahiers du samedi",m:["Nora","Elias","Zoé"]},{n:"Ciné-Poche",m:["Yanis","Inès"]},{n:"Nuit blanche",m:["Sam","Lola","Théo","Mina"]}];
+const sc=(m,me)=>{const s=new Set(me?Object.keys(S.col):[]);m.forEach(x=>Object.keys(bot(x)).forEach(k=>s.add(k)));return s.size};
+const opt=(ids,c)=>ids.map(i=>{const f=getFilm(i);return f?`<option value="${i}">${esc(f.t)} (${R[rar(f)][0]})${c[i]>1?" ×"+c[i]:""}</option>`:""}).join("");
+function renderCardDialog(){
+const overlay=$("#card-modal");if(cardModalId==null){overlay.classList.remove("on");overlay.innerHTML="";return}
+const f=getFilm(cardModalId);if(!f||!S.col[f.id]){cardModalId=null;renderCardDialog();return}
+overlay.classList.add("on");
+overlay.innerHTML=`<section class="card-dialog" data-modal-content role="dialog" aria-modal="true" aria-labelledby="dialog-title"><button class="dialog-close" data-a="closemodal" aria-label="Fermer"><svg class="icon"><use href="#i-cross"/></svg></button><div class="card-dialog-grid"><div>${card(f,S.col[f.id])}</div><div><h2 id="dialog-title">${esc(f.t)}</h2><p class="mu">${esc(f.d)} · <em>${f.y}</em></p><a class="tmdb-link" href="https://www.themoviedb.org/movie/${f.id}" target="_blank" rel="noopener noreferrer">Voir sur TMDB</a><p>${RARITY_SHORT[rar(f)]} · ${R[rar(f)][0]} · ${S.col[f.id]} exemplaire${S.col[f.id]>1?"s":""}</p><div class="row"><button data-a="togglefav" data-v="${f.id}"><svg class="icon"><use href="#i-star"/></svg> ${S.fav[f.id]?"Retirer des":"Ajouter aux"} favoris</button><button data-a="discardcard" data-v="${f.id}">Défausser · ${money(1)}</button></div><div class="box"><label for="auction-price">Prix de départ</label><div class="row"><input id="auction-price" type="number" min="1" max="1000000" step="1" value="${Math.max(5,PR[rar(f)])}"><label>Durée<select id="auction-duration">${Array.from({length:12},(_,i)=>`<option value="${i+1}">${i+1} h</option>`).join("")}</select></label><button class="bt" data-a="auction" data-v="${f.id}">Mettre aux enchères</button></div></div></div></div></section>`;
+}
+function renderAuctionDialog(){
+const overlay=$("#auction-modal");if(!auctionModal){overlay.classList.remove("on");overlay.innerHTML="";return}
+const own=auctionModal.kind==="own",listing=own?S.list[auctionModal.index]:S.mk[auctionModal.index];
+if(!listing){auctionModal=null;renderAuctionDialog();return}
+const f=getFilm(listing.id);if(!f){auctionModal=null;renderAuctionDialog();return}
+overlay.classList.add("on");
+overlay.innerHTML=`<section class="auction-dialog" data-modal-content role="dialog" aria-modal="true" aria-labelledby="auction-title"><button class="dialog-close" data-a="closeauction" aria-label="Fermer"><svg class="icon"><use href="#i-cross"/></svg></button><div class="auction-dialog-grid"><div class="auction-dialog-poster">${card(f)}</div><div class="auction-dialog-info"><h2 id="auction-title">${esc(f.t)}</h2><p class="mu">${esc(f.d)} · <em>${f.y}</em></p><a class="tmdb-link" href="https://www.themoviedb.org/movie/${f.id}" target="_blank" rel="noopener noreferrer">Voir sur TMDB</a>${own?`<p>Prix de départ : ${money(listing.p)}</p>`:`<p>Vendeur : ${esc(listing.s)}</p>`}${listing.bid?`<p>Enchère actuelle : ${money(listing.bid)} · ${esc(listing.bidder)}</p>`:`<p>Mise de départ : ${money(listing.p)}</p>`}<p class="mu">Fin dans <b data-ends-at="${listing.at+listing.durationMs}">${timeLeft(listing.at+listing.durationMs)}</b></p>${own?`<button class="bt" data-a="cancelown" data-v="${auctionModal.index}">Retirer l’annonce</button>`:`<label for="auction-bid-amount">Votre enchère</label><div class="auction-actions"><input id="auction-bid-amount" type="number" min="${listing.bid?listing.bid+1:listing.p}" max="1000000" step="1" value="${listing.bid?listing.bid+1:listing.p}"><button class="bt" data-a="bid" data-v="${auctionModal.index}">Placer l’enchère</button></div><p class="mu">Solde disponible : ${money(S.pts)}</p>`}</div></div></section>`;
+}
+function discardCopies(ids){
+let count=0;
+for(const id of ids){if(!(S.col[id]>0))continue;S.col[id]--;if(!S.col[id])delete S.col[id];selectedIds.delete(Number(id));count++}
+if(!count)return toast("Aucune carte sélectionnée");
+S.pts+=count;save();cardModalId=null;renderCardDialog();render();toastMoney("+",count);
+}
+// ---- vues
+const slots=()=>Array.from({length:S.stock},()=>`<i class="pk on"></i>`).join("");
+const cd=()=>{if(S.stock>=10)return"";const s=Math.max(0,Math.ceil((S.t+6e5-Date.now())/1e3));return`Prochain ticket dans ${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`};
+const vB=()=>`<div class="pwrap" id="pw"><div class="float">${TICKET()}</div><div class="psh"></div></div><div class="sl" id="slots" style="justify-content:center">${slots()}</div>${cd()?`<p class="mu" id="cd" style="text-align:center">${cd()}</p>`:""}`;
+const filteredCollection=()=>owned().filter(f=>(rf<0||rar(f)===rf)&&(!favOnly||!!S.fav[f.id])).sort((a,b)=>rar(b)-rar(a)||a.t.localeCompare(b.t));
+function vF(){const sub=`<div class="tabs2"><button class="${fs=="c"?"on":""}" data-a="fs" data-v="c">Collection</button><button class="${fs=="a"?"on":""}" data-a="fs" data-v="a">Album</button></div>`;
+if(fs=="a"){
+if(albumDirector||albumCategory){const category=albumCategory?TITLE_SETS.find(set=>set.id===albumCategory):null,films=albumDirector?directorFilms(albumDirector):albumEntries(category),title=albumDirector||category?.name||"Albums",collected=films.filter(f=>f.id!==null&&S.col[f.id]).length;return`<h2>Albums</h2>${sub}<button class="back-album" data-a="backalbums">‹ Tous les albums</button><section class="al"><h3>${esc(title)} <small class="mu">${collected}/${films.length}</small></h3>${category?`<p class="mu">Sélection de films primés et référencés. Les cartes fantômes indiquent les titres absents du catalogue chargé.</p>`:""}<div class="bar"><i style="width:${films.length?collected/films.length*100:0}%"></i></div><div class="grid mini">${films.map(f=>f.id!==null&&S.col[f.id]?card(f,S.col[f.id]):ghost(f)).join("")}</div></section>`}
+return`<h2>Albums</h2>${sub}<section class="al"><h3>Filmographies</h3><p class="mu">Explorez les cartes par réalisateur.</p><div class="grid mini">${DIRECTORS.map(name=>{const films=directorFilms(name),count=films.filter(f=>S.col[f.id]).length;return`<button class="album-card" data-a="album" data-v="${esc(name)}"><b>${esc(name)}</b><span class="mu">${count}/${films.length}</span><span class="bar"><i style="width:${films.length?count/films.length*100:0}%"></i></span></button>`}).join("")}</div></section><section class="al"><h3>Films primés et sélections</h3><div class="grid mini">${TITLE_SETS.map(set=>{const entries=albumEntries(set),count=entries.filter(f=>f.id!==null&&S.col[f.id]).length;return`<button class="album-card" data-a="album" data-v="${set.id}"><b>${esc(set.name)}</b><span class="mu">${count}/${entries.length} titres</span><span class="bar"><i style="width:${entries.length?count/entries.length*100:0}%"></i></span></button>`}).join("")}</div></section>`}
+const all=filteredCollection(),pages=Math.max(1,Math.ceil(all.length/30));collectionPage=Math.min(collectionPage,pages);const page=all.slice((collectionPage-1)*30,collectionPage*30),allSelected=page.length>0&&page.every(f=>selectedIds.has(f.id));
+return`<h2>Filmothèque</h2>${sub}<div class="chips"><button class="${rf<0?"on":""}" data-a="rf" data-v="-1">Toutes</button>${R.map((r,i)=>`<button class="rar-filter ${rf==i?"on":""}" style="--rar-color:${RC[i]}" data-a="rf" data-v="${i}">${RARITY_SHORT[i]}</button>`).join("")}<button class="${favOnly?"on":""}" data-a="favfilter"><svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg> Favoris</button></div>
+<div class="collection-tools selection-tools"><span class="mu">${all.length} résultat${all.length>1?"s":""} · page ${collectionPage}/${pages}</span><div class="row"><button data-a="selectpage">${allSelected?"Désélectionner la page":"Tout sélectionner sur la page"}</button>${selectedIds.size?`<button class="bt" data-a="discardselected">Défausser ${selectedIds.size} carte${selectedIds.size>1?"s":""} · ${money(selectedIds.size)}</button>`:""}</div></div>
+<div class="grid">${page.map(f=>`<div class="collection-item ${selectedIds.has(f.id)?"selected":""}"><button class="collection-open" data-a="inspect" data-v="${f.id}" aria-label="Voir ${esc(f.t)}">${card(f,S.col[f.id])}</button><button class="card-favorite ${S.fav[f.id]?"on":""}" data-a="togglefav" data-v="${f.id}" aria-label="${S.fav[f.id]?"Retirer des":"Ajouter aux"} favoris"><svg class="icon" aria-hidden="true"><use href="#i-star"/></svg></button><button class="card-select" data-a="selectcard" data-v="${f.id}" aria-label="${selectedIds.has(f.id)?"Désélectionner":"Sélectionner"} ${esc(f.t)}"><svg class="icon" aria-hidden="true"><use href="#${selectedIds.has(f.id)?"i-check":"i-box"}"/></svg></button></div>`).join("")||`<p class="mu">Aucune carte pour l’instant : ouvrez un booster !</p>`}</div>
+<div class="pagination"><button data-a="page" data-v="-1" ${collectionPage<=1?"disabled":""}>Précédente</button><span class="mu">${collectionPage} / ${pages}</span><button data-a="page" data-v="1" ${collectionPage>=pages?"disabled":""}>Suivante</button></div>`}
+const vP=()=>`<h2>Prix</h2><div class="box row"><span><svg class="award-icon" aria-hidden="true"><use href="#i-ticket"/></svg>Booster bonus (+1 en stock)</span><button data-a="shop">${money(50)}</button></div>`+AC.map(a=>{const d=a[4](),c=S.ach[a[0]];return`<div class="box row"><div><svg class="award-icon" aria-hidden="true"><use href="#award-${a[0]}"/></svg><b>${a[1]}</b><br><span class="mu">${a[2]}</span></div>${c?`<span class="ok"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> réclamé</span>`:`<button ${d?"":"disabled"} data-a="claim" data-v="${a[0]}">${d?"Réclamer · ":""}${money(a[3])}</button>`}</div>`}).join("");
+function vM(){return`<h2>Festival</h2><p class="mu">Enchères locales à ce navigateur. Une carte invendue revient à son propriétaire à l’expiration.</p><section class="al"><h3>Enchères du marché</h3><div class="grid auction-list">${S.mk.map((l,i)=>{const f=getFilm(l.id);return`<article class="auction-card box"><button class="auction-open" data-a="marketmodal" data-v="${i}" aria-label="Voir l’enchère pour ${esc(f.t)}">${card(f)}</button><div class="auction-meta"><span class="mu">${esc(l.s)} · fin dans <b data-ends-at="${l.at+l.durationMs}">${timeLeft(l.at+l.durationMs)}</b></span><span>${l.bid?`Enchère actuelle : ${money(l.bid)} · ${esc(l.bidder)}`:`Mise de départ : ${money(l.p)}`}</span></div></article>`}).join("")}</div></section>
+<section class="al"><h3>Mes annonces</h3>${S.list.length?`<div class="grid auction-list">${S.list.map((l,i)=>{const f=getFilm(l.id);return f?`<article class="auction-card box"><button class="auction-open" data-a="ownmodal" data-v="${i}" aria-label="Voir mon annonce pour ${esc(f.t)}">${card(f)}</button><div class="auction-meta"><b>Prix de départ : ${money(l.p)}</b><span>${l.bid?`Dernière enchère : ${money(l.bid)} · ${esc(l.bidder)}`:"Aucune enchère pour le moment"}</span><span class="mu">Fin dans <b data-ends-at="${l.at+l.durationMs}">${timeLeft(l.at+l.durationMs)}</b></span><button data-a="ownmodal" data-v="${i}">Gérer l’annonce</button></div></article>`:""}).join("")}</div>`:`<p class="mu">Aucune annonce. Ouvrez la filmothèque, sélectionnez une carte et choisissez « Vendre aux enchères ».</p>`}</section>`}
+function vA(){if(profileFriend){const b=bot(profileFriend);return`<h2>Amis</h2><button class="back-album" data-a="closefriend">‹ Retour aux amis</button><section class="box"><div class="friend-profile"><span class="friend-avatar">${esc(profileFriend[0].toUpperCase())}</span><div><h3>${esc(profileFriend)}</h3><span class="mu">Profil local</span></div></div><p>${esc(S.friendBios?.[profileFriend]||"Cinéphile et collectionneur de films.")}</p><div class="grid"><section class="box"><b>Films uniques</b><p>${Object.keys(b).length}</p></section><section class="box"><b>Favoris</b><p>${Math.min(5,Object.keys(b).length)}</p></section></div></section>`}
+return`<h2>Amis</h2><div class="row box"><input id="fn" placeholder="Pseudo de l’ami"><button data-a="addf">Ajouter</button></div>`+S.friends.map(n=>{const b=bot(n),open=trf==n;return`<div class="box"><div class="row"><span class="friend-profile"><span class="friend-avatar">${esc(n[0].toUpperCase())}</span><button class="friend-name" data-a="viewfriend" data-v="${esc(n)}">${esc(n)}</button></span><span class="mu">${Object.keys(b).length} films uniques</span><button data-a="trd" data-v="${esc(n)}">${open?"Fermer":"Échanger"}</button></div>${open?`<div class="row" style="margin-top:8px"><label>Je donne<br><select id="tm">${opt(Object.keys(S.col).map(Number),S.col)||"<option disabled>(vide)</option>"}</select></label><label>Je reçois<br><select id="tt">${opt(Object.keys(b).map(Number),b)}</select></label><button class="bt" data-a="trade">Proposer</button></div><p class="mu">L’ami accepte si la carte offerte est au moins aussi rare que celle demandée.</p>`:""}</div>`}).join("")}
+function vC(){const me=S.club;let rows=CL.filter(c=>!me||c.n!=me.n).map(c=>({n:c.n,m:c.m,s:sc(c.m,false),i:CL.indexOf(c)}));if(me)rows.push({n:me.n,m:me.m,s:sc(me.m,true),me:1});rows.sort((a,b)=>b.s-a.s);
+let h=`<h2>Cinéclub</h2>`;
+if(me)h+=`<div class="box"><div class="row"><h3>${me.n}</h3><button data-a="leave">Quitter</button></div><p>Membres : <b>Moi</b>${me.m.map(x=>", "+x).join("")}</p><p class="mu">Inviter :</p><div class="chips">${S.friends.filter(f=>!me.m.includes(f)).map(f=>`<button data-a="inv" data-v="${f}">+ ${f}</button>`).join("")||`<span class="mu">Tous vos amis sont déjà là.</span>`}</div></div>`;
+else h+=`<div class="row box"><input id="cn" placeholder="Nom du cinéclub"><button data-a="mkc">Créer</button></div>`;
+return h+`<h3>Classement (films uniques réunis)</h3>`+rows.map((r,k)=>`<div class="box row"><span><b>${k+1}.</b> ${r.n}${r.me?" (le mien)":""} <span class="mu">· ${r.m.length+(r.me?1:0)} membres</span></span><span><b>${r.s}</b> / ${F.length} ${!me&&r.i!=null?`<button data-a="join" data-v="${r.i}">Rejoindre</button>`:""}</span></div>`).join("")}
+function vProfile(){const unique=owned().length,copies=Object.values(S.col).reduce((sum,count)=>sum+count,0);return`<h2>Profil</h2><section class="box"><div class="row"><span class="profile-badge">${esc(S.playerAvatar)}</span><div style="flex:1"><label for="profile-name">Nom d’utilisateur</label><div class="row"><input id="profile-name" maxlength="24" value="${esc(S.playerName)}"></div></div></div><label for="profile-avatar">Initiales de l’avatar</label><input id="profile-avatar" maxlength="3" value="${esc(S.playerAvatar)}"><label for="profile-bio">Présentation</label><textarea class="profile-bio" id="profile-bio" maxlength="240" placeholder="Quelques mots sur vos goûts cinéma…">${esc(S.playerBio)}</textarea><button class="bt" data-a="saveprofile">Enregistrer le profil</button></section><div class="grid"><section class="box"><b>Films uniques</b><p>${unique}</p></section><section class="box"><b>Cartes obtenues</b><p>${copies}</p></section><section class="box"><b>Boosters ouverts</b><p>${S.opened}</p></section><section class="box"><b>Favoris</b><p>${Object.keys(S.fav).length}</p></section></div><p class="mu">Ce profil est enregistré uniquement dans ce navigateur.</p>`}
+function vSettings(){return`<h2>Paramètres</h2><section class="box row"><span><svg class="icon" aria-hidden="true"><use href="#${mute?"i-mute":"i-sound"}"/></svg> Son des boosters</span><button data-a="mute">${mute?"Désactivé":"Activé"}</button></section><p class="mu">La collection et les préférences sont enregistrées dans ce navigateur.</p>`}
+function vShop(){return`<h2>Boutique</h2><p class="mu">Les offres ci-dessous sont informatives ; aucun achat n’est proposé.</p><div class="grid wallet-products">${[["petit","Poignée de filmoubidous","2,99 €","500"],["moyen","Boîte de collection","5,99 €","1 200"],["grand","Coffret du cinéphile","11,99 €","2 800"]].map(([id,name,price,amount])=>`<section class="box shop-product"><svg class="currency-icon" style="width:38px;height:38px" aria-hidden="true"><use href="#i-coin"/></svg><h3>${name}</h3><p>${amount} filmoubidous</p><b>${price}</b><p><button data-a="mockbuy" data-v="${id}">Voir l’offre</button></p></section>`).join("")}</div>`}
+function walletDialog(){const overlay=$("#wallet-modal");overlay.classList.add("on");overlay.innerHTML=`<section class="card-dialog" data-modal-content role="dialog" aria-modal="true" aria-labelledby="wallet-title"><button class="dialog-close" data-a="closewallet" aria-label="Fermer"><svg class="icon"><use href="#i-cross"/></svg></button><h2 id="wallet-title">Filmoubidous</h2><p>Votre solde : ${money(S.pts)}</p><p class="mu">Les offres de la boutique sont informatives ; aucun achat n’est proposé.</p><button class="bt" data-a="shopTab">Acheter</button></section>`}
+const V={b:vB,f:vF,p:vP,m:vM,a:vA,c:vC,profile:vProfile,settings:vSettings,shop:vShop},TB=[["b","Booster","i-ticket"],["f","Filmothèque","i-film"],["p","Prix","i-trophy"],["m","Festival","i-stand"],["a","Amis","i-users"],["c","Cinéclub","i-club"],["profile","Profil","i-user"],["settings","Paramètres","i-settings"],["shop","Boutique","i-shop"]];
+function render(){$("#nav").innerHTML=TB.map(([k,n,icon])=>`<button class="${tab==k?"on":""}" data-a="tab" data-v="${k}" aria-label="${n}"><svg class="icon" aria-hidden="true"><use href="#${icon}"/></svg> ${n}</button>`).join("");$("#pts").textContent=S.pts;$("#mb").innerHTML=`<svg class="icon"><use href="${mute?"#i-mute":"#i-sound"}"/></svg>`;$("#mb").setAttribute("aria-label",mute?"Activer le son":"Désactiver le son");$("#main").innerHTML=V[tab]();bindTilt();renderCardDialog();renderAuctionDialog()}
+// ---- sound design (Web Audio, synthétisé)
+let AX=null,mute=!!S.muted,opening=0,ri=0,ncl=0;
+const RC=["#a9b0b9","#63cb8b","#50a1ff","#c17bff","#ffc259","#ffe48b","#ff68c5"];
+function au(){if(!AX){try{AX=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AX&&AX.state=="suspended")AX.resume();return AX}
+function noise(d,f0,f1,v,type,q){const c=au();if(!c||mute)return;const b=c.createBuffer(1,c.sampleRate*d,c.sampleRate),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;const s=c.createBufferSource(),fl=c.createBiquadFilter(),g=c.createGain(),t=c.currentTime;s.buffer=b;fl.type=type||"bandpass";fl.Q.value=q||1;fl.frequency.setValueAtTime(f0,t);fl.frequency.exponentialRampToValueAtTime(f1,t+d);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+Math.min(.012,d/4));g.gain.exponentialRampToValueAtTime(.001,t+d);s.connect(fl);fl.connect(g);g.connect(c.destination);s.start()}
+const SND={shake(){noise(.32,500,1400,.07,"bandpass",.8)},tear(){noise(.35,2800,500,.12,"bandpass",.8);noise(.18,4200,1600,.055,"highpass",1)},
+burst(){noise(.55,1800,500,.13,"bandpass",.7);setTimeout(()=>noise(.18,800,3200,.055,"highpass",.8),80)},
+swipe(){noise(.14,900,2600,.055,"bandpass",1.2)},flip(){noise(.075,1500,5200,.06,"highpass",1)},
+rare(r){if(r>=4)noise(.19,2400,800,.045,"bandpass",.7)}};
+function showReveal(){ri=0;const o=$("#ov");o.className="ov on";o.innerHTML=`<div class="flash"></div>`;setTimeout(rv,500)}
+// ---- affiches, ticket, geste de déchirure, pile de cartes
+const PO={
+"Inception":`<rect width="200" height="300" fill="#0d1b2a"/><path d="M0 300L80 130H120L200 300M30 300L90 160H110L170 300M62 300L98 190H102L138 300" stroke="#7fa8d0" fill="none" stroke-width="2"/><path d="M100 40L124 90H76Z" fill="#e8b84a"/><ellipse cx="100" cy="94" rx="28" ry="7" fill="#c99a2e"/>`,
+"Interstellar":`<rect width="200" height="300" fill="#05060a"/><circle cx="40" cy="50" r="1.5" fill="#fff"/><circle cx="160" cy="30" r="1" fill="#fff"/><circle cx="150" cy="90" r="1.5" fill="#fff"/><ellipse cx="100" cy="130" rx="86" ry="16" fill="none" stroke="#ffb347" stroke-width="7"/><circle cx="100" cy="130" r="34" fill="#000" stroke="#ffd9a0" stroke-width="2"/><path d="M0 300V250Q100 220 200 250V300Z" fill="#1b2a3a"/>`,
+"The Dark Knight":`<rect width="200" height="300" fill="#0b0d16"/><circle cx="100" cy="95" r="42" fill="#f6d365" opacity=".92"/><path d="M0 300V210H20V180H44V220H64V160H90V200H110V150H136V205H160V175H182V215H200V300Z" fill="#06070c"/>`,
+"Parasite":`<rect width="200" height="300" fill="#e7dfc9"/><path d="M0 300V230H40V200H80V170H120V140H160V110H200V300Z" fill="#2f4f3a"/><ellipse cx="60" cy="110" rx="34" ry="26" fill="#6b6f6a"/>`,
+"Dune":`<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6c177"/><stop offset="1" stop-color="#8c3b14"/></linearGradient></defs><rect width="200" height="300" fill="url(#g)"/><circle cx="100" cy="95" r="50" fill="#fff1d0" opacity=".85"/><path d="M0 300V210Q60 170 110 215T200 190V300Z" fill="#7a3414"/><path d="M0 300V250Q70 225 130 255T200 240V300Z" fill="#4a1d0a"/>`,
+"Pulp Fiction":`<rect width="200" height="300" fill="#b3121d"/><path d="M100 150L-40 0H240Z" fill="#ffd166" opacity=".35"/><rect x="62" y="130" width="76" height="54" rx="6" fill="#e8b84a"/><rect x="88" y="124" width="24" height="10" rx="3" fill="none" stroke="#e8b84a" stroke-width="4"/>`};
+const poster=f=>"url('data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice">'+PO[f.t]+'</svg>')+"')";
+const TICKET=()=>`<div class="pack${S.stock<1?" dim":""}" id="pack" data-a="open"><div class="cut"></div><div class="pbody" id="pb"><div class="foil"></div><div class="fan">${boosterFeaturedFilms.map((f,i)=>`<div class="${["f2","f3","f1"][i]}">${card(f,undefined,true)}</div>`).join("")}</div><div class="ticket-brand">Booster</div></div><div class="ptop" id="pt"><div class="stub"><div class="bc"></div></div><div class="tearline"></div></div></div>`;
+function bindTilt(){const t=$("#pt"),w=$("#pw"),p=$("#pack");if(!t)return;let dragging=false,tp=0,ls=0;t.style.touchAction="none";
+t.addEventListener("pointerdown",e=>{if(opening)return;const bounds=t.getBoundingClientRect();if(bounds.bottom-e.clientY>16||e.clientX-bounds.left>bounds.width*.2)return;dragging=true;tp=0;ls=0;t.setPointerCapture(e.pointerId);e.preventDefault();au()});
+t.addEventListener("pointermove",e=>{if(!dragging)return;const r=p.getBoundingClientRect();tp=Math.max(0,Math.min(1,(e.clientX-r.left)/(r.width*.8)));p.style.setProperty("--tp",tp);if(tp-ls>.07){ls=tp;noise(.09,2000+tp*3000,1500,.055,"highpass",1)}});
+t.addEventListener("pointerup",e=>{if(!dragging)return;e.preventDefault();dragging=false;if(tp>=.8){ncl=Date.now();A.rip()}else p.style.setProperty("--tp",0)});
+t.addEventListener("click",e=>{e.preventDefault();e.stopPropagation()});
+t.addEventListener("pointercancel",()=>{dragging=false;p.style.setProperty("--tp",0)});
+w.addEventListener("pointermove",e=>{if(opening||dragging)return;const r=w.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;p.style.transform="perspective(800px) rotateY("+x*26+"deg) rotateX("+(-y*26)+"deg)";p.style.setProperty("--mx",(x+.5)*100+"%")});
+w.addEventListener("pointerleave",()=>{if(!opening)p.style.transform=""})}
+function rv(){const o=$("#ov");
+if(ri>=5){o.style.removeProperty("--rc");o.className="ov on";o.innerHTML=`<div class="rs"><div class="grid rv sum">${last.map((x,i)=>`<div style="--i:${i}">${card(x.f)}${x.nw?`<div class="nw">NOUVEAU</div>`:""}</div>`).join("")}</div><button class="bt" data-a="done">Terminer</button></div>`;return}
+if(!$("#stk")){o.innerHTML=`<div class="rays"></div><button class="skip" data-a="skip">Tout révéler ›</button><div class="stk" id="stk">${last.map((x,i)=>`<div class="sc" data-i="${i}">${card(x.f)}${x.nw?`<div class="nw">NOUVEAU</div>`:""}</div>`).join("")}</div><p class="hint" id="hint"></p><div class="dots" id="dots"></div>`;pileBind()}
+sync()}
+function sync(){const r=rar(last[ri].f),o=$("#ov");o.style.setProperty("--rc",RC[r]);o.classList.toggle("big",r>=3);
+document.querySelectorAll(".sc").forEach(e=>{if(e.classList.contains("out"))return;const i=+e.dataset.i;e.style.setProperty("--d",i-ri);e.style.zIndex=20-(i-ri);if(i==ri)e.setAttribute("data-a","rnext");else e.removeAttribute("data-a")});
+$("#hint").textContent="Touchez ou glissez la carte · "+(ri+1)+"/5";$("#dots").innerHTML=[0,1,2,3,4].map(i=>`<i class="${i<ri?"d":i==ri?"c":""}"></i>`).join("");if(r>=2)setTimeout(()=>SND.rare(r),200)}
+function pileBind(){const s=$("#stk");let x0=null;s.addEventListener("pointerdown",e=>{x0=e.clientX});s.addEventListener("pointerup",e=>{if(x0!=null&&Math.abs(e.clientX-x0)>50)A.rnext("s");x0=null})}
+const A={
+tab(v){tab=v;if(v!=="f")selectedIds.clear();if(v!=="a")profileFriend=null;$("#dr").classList.remove("on");$("#bd").classList.remove("on");render()},fs(v){fs=v;albumDirector=null;albumCategory=null;selectedIds.clear();render()},album(v){if(DIRECTORS.includes(v))albumDirector=v;else if(TITLE_SETS.some(set=>set.id===v))albumCategory=v;render()},backalbums(){albumDirector=null;albumCategory=null;render()},rf(v){rf=+v;collectionPage=1;selectedIds.clear();render()},favfilter(){favOnly=!favOnly;collectionPage=1;selectedIds.clear();render()},
+page(v){collectionPage=Math.max(1,collectionPage+Number(v));render()},
+selectcard(v){const id=Number(v);if(selectedIds.has(id))selectedIds.delete(id);else selectedIds.add(id);render()},
+selectpage(){const page=filteredCollection().slice((collectionPage-1)*30,collectionPage*30),allSelected=page.length>0&&page.every(f=>selectedIds.has(f.id));page.forEach(f=>allSelected?selectedIds.delete(f.id):selectedIds.add(f.id));render()},
+togglefav(v){const id=Number(v);if(S.fav[id])delete S.fav[id];else S.fav[id]=true;save();render()},
+inspect(v){const id=Number(v);if(!getFilm(id)||!S.col[id])return toast("Cette carte n’est plus dans votre collection");cardModalId=id;renderCardDialog()},
+closemodal(){cardModalId=null;renderCardDialog()},closewallet(){const overlay=$("#wallet-modal");overlay.classList.remove("on");overlay.innerHTML=""},closeauction(){auctionModal=null;renderAuctionDialog()},
+marketmodal(v){const index=Number(v);if(S.mk[index]){auctionModal={kind:"market",index};renderAuctionDialog()}},ownmodal(v){const index=Number(v);if(S.list[index]){auctionModal={kind:"own",index};renderAuctionDialog()}},
+wallet(){walletDialog()},
+saveprofile(){const name=$("#profile-name").value.trim().slice(0,24),avatar=$("#profile-avatar").value.trim().replace(/[^\p{L}\p{N}]/gu,"").slice(0,3)||"FM",bio=$("#profile-bio").value.trim().slice(0,240);if(!name)return toast("Saisissez un nom de profil");S.playerName=name;S.playerAvatar=avatar;S.playerBio=bio;save();render();toast("Profil enregistré")},
+viewfriend(v){if(S.friends.includes(v)){profileFriend=v;trf=null;render()}},closefriend(){profileFriend=null;render()},
+discardcard(v){discardCopies([Number(v)])},
+discardselected(){discardCopies([...selectedIds])},
+auction(v){const id=Number(v),price=Number($("#auction-price").value),hours=Number($("#auction-duration").value);if(!S.col[id])return toast("Cette carte n’est plus dans votre collection");if(!Number.isSafeInteger(price)||price<1||price>1000000)return toast("Saisissez un prix entier entre 1 et 1 000 000");if(!Number.isInteger(hours)||hours<1||hours>12)return toast("Choisissez une durée entre 1 et 12 heures");S.col[id]--;if(!S.col[id])delete S.col[id];selectedIds.delete(id);const at=Date.now(),durationMs=hours*HOUR;S.list.push({id,p:price,at,durationMs,bid:0,bidder:null,botBidAt:at+Math.min(15*60000,durationMs/3)});save();cardModalId=null;render();toast(`Annonce publiée pour ${hours} h`)},
+bid(v){const index=Number(v),listing=S.mk[index],amount=Number($("#auction-bid-amount")?.value),minimum=listing?(listing.bid?listing.bid+1:listing.p):0;if(!listing)return toast("Cette enchère n’est plus disponible");if(!Number.isSafeInteger(amount)||amount<minimum||amount>1000000)return toast(`L’enchère minimale est ${minimum}`);if(S.pts+(listing.bidder===S.playerName?listing.bid:0)<amount)return toast("Solde insuffisant");if(listing.bidder===S.playerName)S.pts+=listing.bid;S.pts-=amount;listing.bid=amount;listing.bidder=S.playerName;save();auctionModal=null;render();toast("Enchère enregistrée")},
+open(){if(opening||Date.now()-ncl<300)return;refill();if(S.stock<1)return toast("Aucun booster prêt");opening=1;au();S.stock--;drawPack();const p=$("#pack");if(p){p.style.transform="";p.classList.add("shake");SND.shake();setTimeout(()=>{p.classList.remove("shake");p.classList.add("rip");SND.tear()},700);setTimeout(()=>{SND.burst();showReveal()},1350)}else showReveal()},
+skip(){SND.swipe();ri=5;rv()},
+done(){$("#ov").className="ov";$("#ov").innerHTML="";opening=0;render()},
+mute(){mute=!mute;S.muted=mute;save();render()},
+claim(v){const a=AC.find(x=>x[0]==v);if(a[4]()&&!S.ach[v]){S.ach[v]=1;S.pts+=a[3];save();render();toastMoney("+",a[3])}},
+shop(){if(S.pts<50)return toast("Solde insuffisant");refill();if(S.stock>=10)return toast("Tous les tickets sont déjà prêts");S.pts-=50;S.stock++;save();render()},
+shopTab(){this.closewallet();tab="shop";render()},mockbuy(){toast("La boutique est informative et aucun achat n’est proposé")},
+unlist(v){const l=S.list.splice(+v,1)[0];if(!l)return;S.col[l.id]=(S.col[l.id]||0)+1;save();render();toast("Carte restituée à votre collection")},
+cancelown(v){const l=S.list.splice(Number(v),1)[0];if(!l)return;S.col[l.id]=(S.col[l.id]||0)+1;save();auctionModal=null;render();toast("Carte restituée à votre collection")},
+addf(){const n=$("#fn").value.trim().slice(0,16);if(!n||S.friends.includes(n))return;S.friends.push(n);save();render()},
+trd(v){trf=trf==v?null:v;render()},
+trade(){const m=+$("#tm").value,t=+$("#tt").value,b=bot(trf),offered=getFilm(m),requested=getFilm(t);if(!S.col[m]||!b[t]||!offered||!requested)return;if(rar(offered)>=rar(requested)){S.col[m]--;if(!S.col[m])delete S.col[m];b[m]=(b[m]||0)+1;b[t]--;if(!b[t])delete b[t];S.col[t]=(S.col[t]||0)+1;S.trades++;save();render();toast("Échange accepté !")}else toast(trf+" refuse : carte offerte moins rare")},
+mkc(){const n=$("#cn").value.trim().slice(0,30);if(!n)return;S.club={n,m:[]};save();render()},
+join(v){S.club={n:CL[+v].n,m:CL[+v].m.slice()};save();render()},
+leave(){S.club=null;save();render()},
+inv(v){S.club.m.push(v);save();render()},
+menu(){$("#dr").classList.toggle("on");$("#bd").classList.toggle("on")},
+rip(){if(opening)return;refill();if(S.stock<1){$("#pack").style.setProperty("--tp",0);return toast("Aucun booster prêt")}opening=1;au();S.stock--;drawPack();$("#pack").classList.add("rip");SND.tear();setTimeout(()=>{SND.burst();showReveal()},650)},
+rnext(v){const n=Date.now();if(n-ncl<250&&v!="s")return;ncl=n;const e=document.querySelector('.sc[data-i="'+ri+'"]');if(!e||e.classList.contains("out"))return;SND.swipe();e.classList.add("out");e.removeAttribute("data-a");ri++;if(ri>=5)setTimeout(rv,320);else sync();setTimeout(()=>e.style.display="none",330)}};
+document.addEventListener("click",e=>{if(!(e.target instanceof Element))return;const b=e.target.closest("[data-a]");if(b&&A[b.dataset.a]){if(["card-modal","auction-modal","wallet-modal"].includes(b.id)&&e.target!==b)return;A[b.dataset.a](b.dataset.v)}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(cardModalId!==null)A.closemodal();$("#wallet-modal").classList.remove("on");if(auctionModal!==null)A.closeauction()}});
+setInterval(()=>{
+refill();
+if(tab==="b"&&$("#slots")){$("#slots").innerHTML=slots();const countdown=$("#cd");if(countdown)countdown.textContent=cd()}
+document.querySelectorAll("[data-ends-at]").forEach(node=>{node.textContent=timeLeft(Number(node.dataset.endsAt))});
+const now=Date.now();let changed=false,earned=0,returned=0,marketWins=0;
+S.list.forEach(listing=>{if(now<listing.at+listing.durationMs&&listing.bidder===null&&listing.botBidAt&&now>=listing.botBidAt){listing.bidder=S.friends[0]||"Cinéphile";listing.bid=Math.max(listing.p+1,Math.ceil(listing.p*1.1));listing.botBidAt=0;changed=true}});
+S.mk.forEach(listing=>{if(now>=listing.at+listing.durationMs)return;if(listing.bidder===S.playerName&&now>=listing.npcBidAt){const next=listing.bid+Math.max(1,Math.ceil(listing.p*.1));if(next<=listing.p*5){S.pts+=listing.bid;listing.bid=next;listing.bidder=listing.npcBidder;listing.npcBidAt=now+Math.min(15*60000,listing.durationMs/4);changed=true}}else if(!listing.bidder&&now>=listing.npcBidAt){listing.bid=listing.p;listing.bidder=listing.npcBidder;listing.npcBidAt=now+Math.min(15*60000,listing.durationMs/4);changed=true}});
+const expiredOwn=S.list.filter(listing=>now>=listing.at+listing.durationMs);
+if(expiredOwn.length){S.list=S.list.filter(listing=>now<listing.at+listing.durationMs);expiredOwn.forEach(listing=>{if(listing.bidder){S.pts+=listing.bid;S.sold++;earned+=listing.bid}else{S.col[listing.id]=(S.col[listing.id]||0)+1;returned++}});changed=true}
+const expiredMarket=S.mk.filter(listing=>now>=listing.at+listing.durationMs);
+if(expiredMarket.length){S.mk=S.mk.filter(listing=>now<listing.at+listing.durationMs);expiredMarket.forEach(listing=>{if(listing.bidder===S.playerName){S.col[listing.id]=(S.col[listing.id]||0)+1;marketWins++}});if(!S.mk.length)genMk();changed=true}
+if(changed){save();render();if(earned)toastMoney("Enchère remportée · +",earned);else if(marketWins)toast(`${marketWins} carte${marketWins>1?"s":""} remportée${marketWins>1?"s":""}`);else if(returned)toast(`${returned} carte${returned>1?"s":""} invendue${returned>1?"s":""} restituée${returned>1?"s":""}`)}
+},1000);
+refill();render();if(usesTmdbCatalog)void discoverNextBatch();
+</script></body></html>
