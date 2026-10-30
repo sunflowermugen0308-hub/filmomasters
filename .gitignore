@@ -3,7 +3,6 @@ dist/
 __pycache__/
 .DS_Store
 /films.json
-/public/films.json
 .env
 .env.*
 !.env.example

@@ -383,7 +383,14 @@ request.onsuccess=()=>resolve(request.result);
 request.onerror=()=>reject(request.error||new Error("Impossible d’ouvrir la base des films découverts."));
 });
 }
-const discoveryDb=await openDiscoveryDatabase();
+let discoveryDb=null,storedFilms=[];
+try{
+discoveryDb=await openDiscoveryDatabase();
+storedFilms=await readDiscoveredFilms();
+}catch(error){
+discoveryDb=null;
+console.warn("Sauvegarde des découvertes indisponible :",error instanceof Error?error.message:String(error));
+}
 function readDiscoveredFilms(){
 return new Promise((resolve,reject)=>{
 const request=discoveryDb.transaction("films","readonly").objectStore("films").getAll();
@@ -406,10 +413,11 @@ function registerFilm(f){
 if(FILM_BY_ID.has(f.id))return false;
 F.push(f);FILM_BY_ID.set(f.id,f);byR[rar(f)].push(f);return true;
 }
-const storedFilms=await readDiscoveredFilms();
 const legacyFilms=(Array.isArray(S.extraFilms)?S.extraFilms:[]).filter(f=>f&&Number.isSafeInteger(Number(f.id))&&String(f.t||"").trim()&&Number.isFinite(Number(f.y))&&Number.isFinite(Number(f.k))).map(f=>({id:Number(f.id),t:String(f.t).trim(),o:String(f.o||""),d:String(f.d||"Film à découvrir"),y:Number(f.y),k:Number(f.k),g:Array.isArray(f.g)?f.g.map(String):[],p:typeof f.p==="string"?f.p:"",img:"",adult:f.adult===true||Number(f.r)===6,r:Number.isInteger(Number(f.r))?Math.max(0,Math.min(6,Number(f.r))):0}));
-await storeDiscoveredFilms(legacyFilms);
-delete S.extraFilms;
+if(discoveryDb){
+try{await storeDiscoveredFilms(legacyFilms);delete S.extraFilms}
+catch(error){discoveryDb=null;console.warn("Migration des découvertes impossible :",error instanceof Error?error.message:String(error))}
+}
 [...storedFilms,...legacyFilms].forEach(f=>registerFilm({id:Number(f.id),t:String(f.t||"").trim(),o:String(f.o||""),d:String(f.d||"Film à découvrir"),y:Number(f.y),k:Number(f.k)||0,g:Array.isArray(f.g)?f.g.map(String):[],p:typeof f.p==="string"?f.p:"",img:"",adult:f.adult===true||Number(f.r)===6,r:Number.isInteger(Number(f.r))?Math.max(0,Math.min(6,Number(f.r))):0}));
 S.discoveryQueue=S.discoveryQueue.filter(id=>FILM_BY_ID.has(Number(id))).map(Number);
 save();
@@ -428,7 +436,7 @@ S.list=S.list.map(l=>({...l,botBidAt:Number.isSafeInteger(l.botBidAt)?l.botBidAt
 const timeLeft=ends=>{const sec=Math.max(0,Math.ceil((ends-Date.now())/1000));return sec>=3600?`${Math.floor(sec/3600)} h ${String(Math.floor(sec%3600/60)).padStart(2,"0")} min`:`${Math.floor(sec/60)} min ${String(sec%60).padStart(2,"0")} s`};
 let discoveryLoading=false;
 async function discoverNextBatch(){
-if(discoveryLoading||S.discoveryComplete)return false;
+if(discoveryLoading||S.discoveryComplete||!discoveryDb)return false;
 discoveryLoading=true;
 try{
 for(let attempt=0;attempt<12;attempt++){
@@ -527,7 +535,7 @@ S.pts+=count;save();cardModalId=null;renderCardDialog();render();toastMoney("+",
 // ---- vues
 const slots=()=>Array.from({length:S.stock},()=>`<i class="pk on"></i>`).join("");
 const cd=()=>{if(S.stock>=10)return"";const s=Math.max(0,Math.ceil((S.t+6e5-Date.now())/1e3));return`Prochain ticket dans ${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`};
-const vB=()=>`<div class="pwrap" id="pw"><div class="float">${TICKET()}</div><div class="psh"></div></div><div class="sl" id="slots" style="justify-content:center">${slots()}</div>${cd()?`<p class="mu" id="cd" style="text-align:center">${cd()}</p>`:""}`;
+const vB=()=>`${usesTmdbCatalog&&!discoveryDb?`<p class="box mu" role="status">La sauvegarde des découvertes TMDB n’est pas disponible sur cet appareil. Les boosters et le catalogue existant restent jouables.</p>`:""}<div class="pwrap" id="pw"><div class="float">${TICKET()}</div><div class="psh"></div></div><div class="sl" id="slots" style="justify-content:center">${slots()}</div>${cd()?`<p class="mu" id="cd" style="text-align:center">${cd()}</p>`:""}`;
 const filteredCollection=()=>owned().filter(f=>(rf<0||rar(f)===rf)&&(!favOnly||!!S.fav[f.id])).sort((a,b)=>rar(b)-rar(a)||a.t.localeCompare(b.t));
 function vF(){const sub=`<div class="tabs2"><button class="${fs=="c"?"on":""}" data-a="fs" data-v="c">Collection</button><button class="${fs=="a"?"on":""}" data-a="fs" data-v="a">Album</button></div>`;
 if(fs=="a"){
