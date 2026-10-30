@@ -270,6 +270,11 @@ header h1{color:var(--gold);text-shadow:0 0 14px #e8b84a88}
 <header><span style="display:flex;align-items:center;gap:10px"><button id="hb" data-a="menu" aria-label="Ouvrir le menu"><svg class="icon"><use href="#i-menu"/></svg></button><svg class="brand-icon" viewBox="0 0 24 24" aria-label="Logo cinéma FilmoMasters"><use href="#brand-mark"/></svg><h1>FilmoMasters</h1></span><span style="display:flex;align-items:center;gap:8px"><button class="pts coin-button" data-a="wallet" aria-label="Voir mon solde et la boutique"><svg class="currency-icon" aria-hidden="true"><use href="#i-coin"/></svg><span id="pts">0</span></button><button id="mb" data-a="mute" aria-label="Désactiver le son"><svg class="icon"><use href="#i-sound"/></svg></button></span></header><div class="mq"><svg viewBox="-100 0 1400 58" preserveAspectRatio="none" aria-hidden="true"><path d="M-220 5Q600 92 1420 5"/><circle cx="-100" cy="17" r="3"/><circle cx="75" cy="31" r="3"/><circle cx="250" cy="41" r="3"/><circle cx="425" cy="46" r="3"/><circle cx="600" cy="48" r="3"/><circle cx="775" cy="46" r="3"/><circle cx="950" cy="41" r="3"/><circle cx="1125" cy="31" r="3"/><circle cx="1300" cy="17" r="3"/></svg></div>
 <aside id="dr"><div id="nav"></div></aside><div id="bd" data-a="menu"></div><main id="main"></main><div class="ov" id="ov"></div><div class="modal" id="card-modal" data-a="closemodal" role="presentation"></div><div class="modal" id="wallet-modal" data-a="closewallet" role="presentation"></div><div class="modal" id="auction-modal" data-a="closeauction" role="presentation"></div><div id="toast"></div>
 <script type="module">
+import { createClient } from "@supabase/supabase-js";
+const supabaseUrl=import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey=import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabase=supabaseUrl&&supabaseAnonKey?createClient(supabaseUrl,supabaseAnonKey):null;
+let cloudUser=null,cloudNotice="",cloudLoading=false;
 const DEMO_FILMS=`Pulp Fiction|Quentin Tarantino|1994|4000|p
 Parasite|Bong Joon-ho|2019|3300|pc
 Fight Club|David Fincher|1999|4200
@@ -375,6 +380,26 @@ if(!Number.isInteger(S.discoveryYear))S.discoveryYear=new Date().getFullYear();
 if(!Number.isInteger(S.discoveryPage)||S.discoveryPage<1||S.discoveryPage>500)S.discoveryPage=1;
 if(!Number.isInteger(S.discoveryMonth)||S.discoveryMonth<0||S.discoveryMonth>12)S.discoveryMonth=0;
 const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){console.error("Impossible d’enregistrer la sauvegarde :",e)}};
+async function loadCloudProfile(user){
+const {data,error}=await supabase.from("profiles").select("display_name,avatar,bio").eq("id",user.id).maybeSingle();
+if(error)throw error;
+if(data){S.playerName=data.display_name;S.playerAvatar=data.avatar;S.playerBio=data.bio}
+else{
+const {error:insertError}=await supabase.from("profiles").insert({id:user.id,display_name:S.playerName,avatar:S.playerAvatar,bio:S.playerBio});
+if(insertError)throw insertError;
+}
+save();
+}
+async function initCloudAccount(){
+if(!supabase)return;
+cloudLoading=true;render();
+try{
+const {data,error}=await supabase.auth.getSession();
+if(error)throw error;
+if(data.session){cloudUser=data.session.user;await loadCloudProfile(cloudUser)}
+}catch(error){cloudNotice=error instanceof Error?error.message:"Impossible de charger le compte."}
+finally{cloudLoading=false;render()}
+}
 function openDiscoveryDatabase(){
 return new Promise((resolve,reject)=>{
 const request=indexedDB.open("filmomasters-discoveries",1);
@@ -556,7 +581,7 @@ let h=`<h2>Cinéclub</h2>`;
 if(me)h+=`<div class="box"><div class="row"><h3>${me.n}</h3><button data-a="leave">Quitter</button></div><p>Membres : <b>Moi</b>${me.m.map(x=>", "+x).join("")}</p><p class="mu">Inviter :</p><div class="chips">${S.friends.filter(f=>!me.m.includes(f)).map(f=>`<button data-a="inv" data-v="${f}">+ ${f}</button>`).join("")||`<span class="mu">Tous vos amis sont déjà là.</span>`}</div></div>`;
 else h+=`<div class="row box"><input id="cn" placeholder="Nom du cinéclub"><button data-a="mkc">Créer</button></div>`;
 return h+`<h3>Classement (films uniques réunis)</h3>`+rows.map((r,k)=>`<div class="box row"><span><b>${k+1}.</b> ${r.n}${r.me?" (le mien)":""} <span class="mu">· ${r.m.length+(r.me?1:0)} membres</span></span><span><b>${r.s}</b> / ${F.length} ${!me&&r.i!=null?`<button data-a="join" data-v="${r.i}">Rejoindre</button>`:""}</span></div>`).join("")}
-function vProfile(){const unique=owned().length,copies=Object.values(S.col).reduce((sum,count)=>sum+count,0);return`<h2>Profil</h2><section class="box"><div class="row"><span class="profile-badge">${esc(S.playerAvatar)}</span><div style="flex:1"><label for="profile-name">Nom d’utilisateur</label><div class="row"><input id="profile-name" maxlength="24" value="${esc(S.playerName)}"></div></div></div><label for="profile-avatar">Initiales de l’avatar</label><input id="profile-avatar" maxlength="3" value="${esc(S.playerAvatar)}"><label for="profile-bio">Présentation</label><textarea class="profile-bio" id="profile-bio" maxlength="240" placeholder="Quelques mots sur vos goûts cinéma…">${esc(S.playerBio)}</textarea><button class="bt" data-a="saveprofile">Enregistrer le profil</button></section><div class="grid"><section class="box"><b>Films uniques</b><p>${unique}</p></section><section class="box"><b>Cartes obtenues</b><p>${copies}</p></section><section class="box"><b>Boosters ouverts</b><p>${S.opened}</p></section><section class="box"><b>Favoris</b><p>${Object.keys(S.fav).length}</p></section></div><p class="mu">Ce profil est enregistré uniquement dans ce navigateur.</p>`}
+function vProfile(){const unique=owned().length,copies=Object.values(S.col).reduce((sum,count)=>sum+count,0),account=!supabase?`<p class="mu" role="status">Mode local : configurez Supabase pour créer un compte.</p>`:cloudUser?`<div class="box row"><span>Connecté : ${esc(cloudUser.email||"")}</span><button data-a="signout">Se déconnecter</button></div>`:`<section class="box"><h3>Compte</h3><label for="auth-email">Adresse e-mail</label><input id="auth-email" type="email" autocomplete="email" maxlength="254" placeholder="vous@exemple.fr"><label for="auth-password">Mot de passe</label><input id="auth-password" type="password" autocomplete="current-password" minlength="8" placeholder="8 caractères minimum"><div class="row"><button data-a="signin">Se connecter</button><button class="bt" data-a="signup">Créer un compte</button></div></section>`;return`<h2>Profil</h2>${account}${cloudLoading?`<p class="mu" role="status">Synchronisation du profil…</p>`:cloudNotice?`<p class="mu" role="status">${esc(cloudNotice)}</p>`:""}<section class="box"><div class="row"><span class="profile-badge">${esc(S.playerAvatar)}</span><div style="flex:1"><label for="profile-name">Nom d’utilisateur</label><div class="row"><input id="profile-name" maxlength="24" value="${esc(S.playerName)}"></div></div></div><label for="profile-avatar">Initiales de l’avatar</label><input id="profile-avatar" maxlength="3" value="${esc(S.playerAvatar)}"><label for="profile-bio">Présentation</label><textarea class="profile-bio" id="profile-bio" maxlength="240" placeholder="Quelques mots sur vos goûts cinéma…">${esc(S.playerBio)}</textarea><button class="bt" data-a="saveprofile">Enregistrer le profil</button></section><div class="grid"><section class="box"><b>Films uniques</b><p>${unique}</p></section><section class="box"><b>Cartes obtenues</b><p>${copies}</p></section><section class="box"><b>Boosters ouverts</b><p>${S.opened}</p></section><section class="box"><b>Favoris</b><p>${Object.keys(S.fav).length}</p></section></div><p class="mu">${cloudUser?"Profil synchronisé sur votre compte. La collection reste enregistrée dans ce navigateur.":"Le profil et la collection sont enregistrés dans ce navigateur."}</p>`}
 function vSettings(){return`<h2>Paramètres</h2><section class="box row"><span><svg class="icon" aria-hidden="true"><use href="#${mute?"i-mute":"i-sound"}"/></svg> Son des boosters</span><button data-a="mute">${mute?"Désactivé":"Activé"}</button></section><p class="mu">La collection et les préférences sont enregistrées dans ce navigateur.</p>`}
 function vShop(){return`<h2>Boutique</h2><p class="mu">Les offres ci-dessous sont informatives ; aucun achat n’est proposé.</p><div class="grid wallet-products">${[["petit","Poignée de filmoubidous","2,99 €","500"],["moyen","Boîte de collection","5,99 €","1 200"],["grand","Coffret du cinéphile","11,99 €","2 800"]].map(([id,name,price,amount])=>`<section class="box shop-product"><svg class="currency-icon" style="width:38px;height:38px" aria-hidden="true"><use href="#i-coin"/></svg><h3>${name}</h3><p>${amount} filmoubidous</p><b>${price}</b><p><button data-a="mockbuy" data-v="${id}">Voir l’offre</button></p></section>`).join("")}</div>`}
 function walletDialog(){const overlay=$("#wallet-modal");overlay.classList.add("on");overlay.innerHTML=`<section class="card-dialog" data-modal-content role="dialog" aria-modal="true" aria-labelledby="wallet-title"><button class="dialog-close" data-a="closewallet" aria-label="Fermer"><svg class="icon"><use href="#i-cross"/></svg></button><h2 id="wallet-title">Filmoubidous</h2><p>Votre solde : ${money(S.pts)}</p><p class="mu">Les offres de la boutique sont informatives ; aucun achat n’est proposé.</p><button class="bt" data-a="shopTab">Acheter</button></section>`}
@@ -608,7 +633,10 @@ inspect(v){const id=Number(v);if(!getFilm(id)||!S.col[id])return toast("Cette ca
 closemodal(){cardModalId=null;renderCardDialog()},closewallet(){const overlay=$("#wallet-modal");overlay.classList.remove("on");overlay.innerHTML=""},closeauction(){auctionModal=null;renderAuctionDialog()},
 marketmodal(v){const index=Number(v);if(S.mk[index]){auctionModal={kind:"market",index};renderAuctionDialog()}},ownmodal(v){const index=Number(v);if(S.list[index]){auctionModal={kind:"own",index};renderAuctionDialog()}},
 wallet(){walletDialog()},
-saveprofile(){const name=$("#profile-name").value.trim().slice(0,24),avatar=$("#profile-avatar").value.trim().replace(/[^\p{L}\p{N}]/gu,"").slice(0,3)||"FM",bio=$("#profile-bio").value.trim().slice(0,240);if(!name)return toast("Saisissez un nom de profil");S.playerName=name;S.playerAvatar=avatar;S.playerBio=bio;save();render();toast("Profil enregistré")},
+async authenticate(mode){if(!supabase)return toast("Connexion distante non configurée");const email=$("#auth-email")?.value.trim(),password=$("#auth-password")?.value;if(!email||!password)return toast("Saisissez votre adresse e-mail et votre mot de passe");if(password.length<8)return toast("Le mot de passe doit contenir au moins 8 caractères");cloudNotice="";cloudLoading=true;render();try{const result=mode==="signup"?await supabase.auth.signUp({email,password}):await supabase.auth.signInWithPassword({email,password});if(result.error)throw result.error;if(!result.data.session){cloudNotice="Compte créé. Confirmez votre adresse e-mail avant de vous connecter.";toast("Vérifiez votre boîte e-mail")}else{cloudUser=result.data.user;await loadCloudProfile(cloudUser);toast("Compte connecté")}}catch(error){cloudNotice=error instanceof Error?error.message:"Échec de l’authentification."}finally{cloudLoading=false;render()}},
+signin(){return this.authenticate("signin")},signup(){return this.authenticate("signup")},
+async signout(){if(!supabase)return;const {error}=await supabase.auth.signOut();if(error)return toast(error.message);cloudUser=null;cloudNotice="";render();toast("Déconnexion effectuée")},
+async saveprofile(){const name=$("#profile-name").value.trim().slice(0,24),avatar=$("#profile-avatar").value.trim().replace(/[^\p{L}\p{N}]/gu,"").slice(0,3)||"FM",bio=$("#profile-bio").value.trim().slice(0,240);if(!name)return toast("Saisissez un nom de profil");S.playerName=name;S.playerAvatar=avatar;S.playerBio=bio;save();if(cloudUser){const {error}=await supabase.from("profiles").upsert({id:cloudUser.id,display_name:name,avatar,bio});if(error){cloudNotice="Profil sauvegardé localement, mais la synchronisation a échoué.";render();return toast(error.message)}}render();toast(cloudUser?"Profil synchronisé":"Profil enregistré")},
 viewfriend(v){if(S.friends.includes(v)){profileFriend=v;trf=null;render()}},closefriend(){profileFriend=null;render()},
 discardcard(v){discardCopies([Number(v)])},
 discardselected(){discardCopies([...selectedIds])},
@@ -648,5 +676,5 @@ const expiredMarket=S.mk.filter(listing=>now>=listing.at+listing.durationMs);
 if(expiredMarket.length){S.mk=S.mk.filter(listing=>now<listing.at+listing.durationMs);expiredMarket.forEach(listing=>{if(listing.bidder===S.playerName){S.col[listing.id]=(S.col[listing.id]||0)+1;marketWins++}});if(!S.mk.length)genMk();changed=true}
 if(changed){save();render();if(earned)toastMoney("Enchère remportée · +",earned);else if(marketWins)toast(`${marketWins} carte${marketWins>1?"s":""} remportée${marketWins>1?"s":""}`);else if(returned)toast(`${returned} carte${returned>1?"s":""} invendue${returned>1?"s":""} restituée${returned>1?"s":""}`)}
 },1000);
-refill();render();if(usesTmdbCatalog)void discoverNextBatch();
+refill();render();if(supabase)void initCloudAccount();if(usesTmdbCatalog)void discoverNextBatch();
 </script></body></html>

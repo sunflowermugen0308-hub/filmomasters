@@ -36,3 +36,14 @@ Le script écrit `public/films.json`, lu automatiquement par le site et inclus d
 ## Déployer sur Netlify
 
 Le dépôt se construit avec `npm run build` et publie le dossier `dist`. La découverte progressive TMDB utilise une fonction Netlify ; configurez `TMDB_API_KEY` dans les variables d’environnement du site Netlify avant le déploiement. La clé ne doit pas être ajoutée au dépôt.
+
+## Comptes et profils Supabase
+
+L’authentification et la synchronisation du profil utilisent Supabase. La collection, le solde, les boosters et les enchères restent locaux à ce stade.
+
+1. Créez un projet Supabase et exécutez [`supabase/schema.sql`](supabase/schema.sql) dans l’éditeur SQL du projet.
+2. Dans Authentication > URL Configuration, définissez l’URL Netlify comme Site URL et ajoutez `http://localhost:5173` aux Redirect URLs pour le développement local.
+3. Copiez `.env.example` vers `.env`, puis renseignez `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` avec les identifiants du projet.
+4. Dans les variables d’environnement Netlify, ajoutez ces mêmes variables et relancez un déploiement.
+
+La clé `VITE_SUPABASE_ANON_KEY` est une clé publique prévue pour le navigateur ; l’accès aux profils est limité par les politiques RLS du schéma. Ne mettez jamais une clé `service_role` dans les variables `VITE_*` ni dans le code client.
